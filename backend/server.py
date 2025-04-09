@@ -154,19 +154,32 @@ async def test():
 
 @app.websocket("/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
-    # Wait for initial connection message with player name
+    # First, accept the connection
     logger.info(f"WebSocket connection request from player {player_id}")
-    await websocket.accept()
-    logger.info(f"WebSocket connection accepted for player {player_id}")
+    try:
+        await websocket.accept()
+        logger.info(f"WebSocket connection accepted for player {player_id}")
+    except Exception as e:
+        logger.error(f"Failed to accept WebSocket connection: {str(e)}")
+        return
     
     try:
         # First message should contain player name
-        data = await websocket.receive_text()
-        connection_data = json.loads(data)
-        player_name = connection_data.get("name", f"Player-{player_id[:5]}")
+        try:
+            data = await websocket.receive_text()
+            connection_data = json.loads(data)
+            player_name = connection_data.get("name", f"Player-{player_id[:5]}")
+            logger.info(f"Received initial message with player name: {player_name}")
+        except Exception as e:
+            logger.error(f"Failed to receive initial player data: {str(e)}")
+            player_name = f"Player-{player_id[:5]}"
         
         # Complete connection with player info
-        await manager.connect(websocket, player_id, player_name)
+        try:
+            await manager.connect(websocket, player_id, player_name)
+        except Exception as e:
+            logger.error(f"Failed to register player in manager: {str(e)}")
+            return
         
         # Handle incoming messages
         while True:
@@ -202,17 +215,24 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 
             except json.JSONDecodeError:
                 logger.error(f"Invalid JSON from {player_id}")
+            except WebSocketDisconnect:
+                logger.info(f"Connection closed for {player_id}")
+                break
             except Exception as e:
                 logger.error(f"Error processing message from {player_id}: {str(e)}")
                 
     except WebSocketDisconnect:
         logger.info(f"WebSocket disconnected for player {player_id}")
-        manager.disconnect(player_id)
-        await manager.broadcast_player_left(player_id)
     except Exception as e:
         logger.error(f"WebSocket error for player {player_id}: {str(e)}")
-        manager.disconnect(player_id)
-        await manager.broadcast_player_left(player_id)
+    finally:
+        # Always ensure player is disconnected properly
+        try:
+            manager.disconnect(player_id)
+            await manager.broadcast_player_left(player_id)
+            logger.info(f"Player {player_id} properly disconnected and broadcast sent")
+        except Exception as e:
+            logger.error(f"Error during disconnect cleanup: {str(e)}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
