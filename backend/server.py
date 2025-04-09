@@ -48,7 +48,7 @@ class ConnectionManager:
         self.last_debug_log = 0
         
     async def connect(self, websocket: WebSocket, player_id: str, player_name: str):
-        await websocket.accept()
+        # Don't call accept here - the endpoint should handle that
         self.active_connections[player_id] = websocket
         # Initialize player state
         self.player_states[player_id] = {
@@ -212,16 +212,6 @@ async def test():
     logger.info("Test endpoint called")
     return {"status": "ok", "active_connections": len(manager.active_connections)}
 
-@app.get("/api/test")
-async def api_test():
-    logger.info("API test endpoint called")
-    return {"status": "ok", "message": "API endpoint works", "active_connections": len(manager.active_connections)}
-
-@app.get("/api/ws/test")
-async def ws_path_test():
-    logger.info("WebSocket path test endpoint called")
-    return {"status": "ok", "message": "WebSocket path works"}
-
 @app.websocket("/ws/{player_id}")
 @app.websocket("/api/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
@@ -306,9 +296,9 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
         except Exception as e:
             logger.error(f"Error during disconnect cleanup: {str(e)}")
 
-# We now handle both /ws/{player_id} and /api/ws/{player_id} in the main websocket_endpoint
-
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
 
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8001)
