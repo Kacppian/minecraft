@@ -130,6 +130,10 @@ export class MultiplayerManager {
     this.scene.add(otherPlayer);
     this.otherPlayers.set(playerData.id, otherPlayer);
     
+    // Log the active other players
+    console.log(`Active players: ${this.otherPlayers.size}`, 
+                Array.from(this.otherPlayers.keys()));
+    
     // Display a status message
     document.getElementById('status').textContent = `${playerData.name} joined`;
     setTimeout(() => {
