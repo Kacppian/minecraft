@@ -119,7 +119,7 @@ function animate() {
     const infoElement = document.getElementById('info-player-position');
     if (infoElement) {
       const otherPlayersCount = multiplayer.otherPlayers.size;
-      const posInfo = player.getPositionString();
+      const posInfo = `X: ${player.position.x.toFixed(2)}, Y: ${player.position.y.toFixed(2)}, Z: ${player.position.z.toFixed(2)}`;
       infoElement.innerHTML = `${posInfo}<br>Other players: ${otherPlayersCount}`;
     }
   }
