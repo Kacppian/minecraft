@@ -7,6 +7,7 @@ import { Physics } from './physics';
 import { setupUI } from './ui';
 import { ModelLoader } from './modelLoader';
 import { MultiplayerManager } from './multiplayerManager';
+import audioManager from './audioManager';
 
 // UI Setup
 const stats = new Stats();
