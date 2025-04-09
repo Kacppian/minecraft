@@ -66,6 +66,9 @@ export class MultiplayerManager {
       this.handleMessage(JSON.parse(event.data));
     };
     
+    // Make the multiplayer instance globally accessible for chat
+    window.multiplayer = this;
+    
     this.socket.onclose = () => {
       console.log('WebSocket connection closed');
       this.connected = false;
