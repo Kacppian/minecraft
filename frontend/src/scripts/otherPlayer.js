@@ -19,6 +19,12 @@ export class OtherPlayer extends THREE.Group {
     this.chatBubble = null;
     this.chatTimeout = null;
     
+    // SuperSaiyan mode properties
+    this.isSuperSaiyanMode = false;
+    this.fireParticles = null;
+    this.glowEffect = null;
+    this.superSaiyanAnimationFrame = null;
+    
     // Make player models slightly larger for better visibility
     this.scale.set(1.2, 1.2, 1.2);
     
