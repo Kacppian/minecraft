@@ -19,7 +19,7 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-app = FastAPI()  # Remove prefix here - it's handled by the ingress
+app = FastAPI(prefix="/api")  # Add prefix for proper URL routing
 
 app.add_middleware(
     CORSMiddleware,
