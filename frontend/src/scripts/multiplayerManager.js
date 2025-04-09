@@ -428,6 +428,11 @@ export class MultiplayerManager {
     this.isSuperSaiyanMode = !this.isSuperSaiyanMode;
     console.log(`SuperSaiyan mode ${this.isSuperSaiyanMode ? 'activated' : 'deactivated'} for local player`);
     
+    // Play appropriate sound effect
+    if (window.audioManager) {
+      window.audioManager.playSuperSaiyanSound(this.isSuperSaiyanMode);
+    }
+    
     // Apply visual effect to local player (handled in the Player class)
     if (this.localPlayer && typeof this.localPlayer.setSuperSaiyanMode === 'function') {
       this.localPlayer.setSuperSaiyanMode(this.isSuperSaiyanMode);
