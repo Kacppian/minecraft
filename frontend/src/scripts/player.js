@@ -328,6 +328,16 @@ export class Player {
             this.selectedCoords.y,
             this.selectedCoords.z
           );
+          
+          // Send block removal to multiplayer system if it exists
+          if (window.multiplayer) {
+            window.multiplayer.sendBlockUpdate(
+              'remove',
+              this.selectedCoords.x,
+              this.selectedCoords.y,
+              this.selectedCoords.z
+            );
+          }
         } else {
           this.world.addBlock(
             this.selectedCoords.x,
@@ -335,6 +345,17 @@ export class Player {
             this.selectedCoords.z,
             this.activeBlockId
           );
+          
+          // Send block addition to multiplayer system if it exists
+          if (window.multiplayer) {
+            window.multiplayer.sendBlockUpdate(
+              'add',
+              this.selectedCoords.x,
+              this.selectedCoords.y,
+              this.selectedCoords.z,
+              this.activeBlockId
+            );
+          }
         }
 
         // If the tool isn't currently animating, trigger the animation
