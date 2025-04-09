@@ -6,6 +6,7 @@ import { Player } from './player';
 import { Physics } from './physics';
 import { setupUI } from './ui';
 import { ModelLoader } from './modelLoader';
+import { MultiplayerManager } from './multiplayerManager';
 
 // UI Setup
 const stats = new Stats();
@@ -30,6 +31,23 @@ scene.add(world);
 
 const player = new Player(scene, world);
 const physics = new Physics(scene);
+
+// Initialize multiplayer manager
+const multiplayer = new MultiplayerManager(scene, player);
+// Connect to WebSocket server when the game starts
+document.addEventListener('keydown', function setupMultiplayer() {
+  // Only set up once
+  document.removeEventListener('keydown', setupMultiplayer);
+  
+  // Connect to the WebSocket server
+  multiplayer.connect();
+  
+  // Show connection message
+  document.getElementById('status').textContent = 'Connecting to server...';
+  setTimeout(() => {
+    document.getElementById('status').textContent = '';
+  }, 3000);
+}, { once: true });
 
 // Camera setup
 const orbitCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
