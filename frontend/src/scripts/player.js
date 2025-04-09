@@ -112,6 +112,165 @@ export class Player {
     if (this.tool.animate) {
       this.updateToolAnimation();
     }
+    
+    // Update SuperSaiyan effect if active
+    if (this.isSuperSaiyanMode) {
+      this.updateSuperSaiyanEffect();
+    }
+  }
+  
+  /**
+   * Sets the SuperSaiyan mode state
+   * @param {Boolean} active - Whether to activate or deactivate SuperSaiyan mode
+   */
+  setSuperSaiyanMode(active) {
+    console.log(`Setting SuperSaiyan mode to ${active}`);
+    
+    // Toggle the mode
+    this.isSuperSaiyanMode = active;
+    
+    if (active) {
+      // Create SuperSaiyan effect for first-person view
+      this.createSuperSaiyanEffect();
+    } else {
+      // Remove SuperSaiyan effect
+      this.removeSuperSaiyanEffect();
+    }
+  }
+  
+  /**
+   * Creates the SuperSaiyan effect for first-person view
+   */
+  createSuperSaiyanEffect() {
+    // Clear any existing effects first
+    this.removeSuperSaiyanEffect();
+    
+    // Create fire particles around the camera
+    const particleCount = 100;
+    const particleGeometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    
+    // Create random positions for particles around the camera view
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      // Random positions forming a partial sphere in front of the camera
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI * 0.5;
+      const radius = 0.5 + Math.random() * 0.5;
+      
+      positions[i] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i + 1] = radius * Math.cos(phi) - 0.2; // Mostly above view
+      positions[i + 2] = radius * Math.sin(phi) * Math.sin(theta) - 0.5; // In front of camera
+    }
+    
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    
+    // Create fire-colored particles
+    const particleMaterial = new THREE.PointsMaterial({
+      color: 0xFF5500,
+      size: 0.03,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending
+    });
+    
+    this.superSaiyanEffect.particles = new THREE.Points(particleGeometry, particleMaterial);
+    this.camera.add(this.superSaiyanEffect.particles);
+    
+    // Store original positions for animation
+    this.superSaiyanEffect.particlePositions = [...positions];
+    
+    // Add slight golden tint to the screen (by adding a colored plane in front of camera)
+    const glowGeometry = new THREE.PlaneGeometry(2, 2);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0xFFAA00,
+      transparent: true,
+      opacity: 0.1,
+      side: THREE.DoubleSide,
+      blending: THREE.AdditiveBlending,
+      depthTest: false
+    });
+    
+    this.superSaiyanEffect.glow = new THREE.Mesh(glowGeometry, glowMaterial);
+    this.superSaiyanEffect.glow.position.z = -0.5;
+    this.camera.add(this.superSaiyanEffect.glow);
+    
+    // Add sound effect (if browser allows)
+    try {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start();
+      setTimeout(() => {
+        oscillator.stop();
+      }, 1000);
+    } catch (e) {
+      console.log("Audio not supported for SuperSaiyan effect", e);
+    }
+  }
+  
+  /**
+   * Removes the SuperSaiyan effect
+   */
+  removeSuperSaiyanEffect() {
+    // Remove particle effect
+    if (this.superSaiyanEffect.particles) {
+      this.camera.remove(this.superSaiyanEffect.particles);
+      this.superSaiyanEffect.particles.geometry.dispose();
+      this.superSaiyanEffect.particles.material.dispose();
+      this.superSaiyanEffect.particles = null;
+    }
+    
+    // Remove glow effect
+    if (this.superSaiyanEffect.glow) {
+      this.camera.remove(this.superSaiyanEffect.glow);
+      this.superSaiyanEffect.glow.geometry.dispose();
+      this.superSaiyanEffect.glow.material.dispose();
+      this.superSaiyanEffect.glow = null;
+    }
+    
+    // Cancel animation frame if running
+    if (this.superSaiyanEffect.animationFrame) {
+      cancelAnimationFrame(this.superSaiyanEffect.animationFrame);
+      this.superSaiyanEffect.animationFrame = null;
+    }
+  }
+  
+  /**
+   * Updates the SuperSaiyan particle effect
+   */
+  updateSuperSaiyanEffect() {
+    if (!this.isSuperSaiyanMode || !this.superSaiyanEffect.particles) return;
+    
+    const positions = this.superSaiyanEffect.particles.geometry.attributes.position.array;
+    const originalPositions = this.superSaiyanEffect.particlePositions;
+    const time = Date.now() * 0.005;
+    
+    // Animate each particle
+    for (let i = 0; i < positions.length; i += 3) {
+      const x = originalPositions[i];
+      const y = originalPositions[i + 1];
+      const z = originalPositions[i + 2];
+      
+      positions[i] = x + Math.sin(time + i * 0.1) * 0.05;
+      positions[i + 1] = y + Math.cos(time + i * 0.1) * 0.05;
+      positions[i + 2] = z + Math.sin(time * 1.2 + i * 0.1) * 0.05;
+    }
+    
+    this.superSaiyanEffect.particles.geometry.attributes.position.needsUpdate = true;
+    
+    // Pulse the glow effect
+    if (this.superSaiyanEffect.glow) {
+      const opacity = 0.1 + Math.sin(time * 2) * 0.05;
+      this.superSaiyanEffect.glow.material.opacity = opacity;
+    }
   }
 
   /**
