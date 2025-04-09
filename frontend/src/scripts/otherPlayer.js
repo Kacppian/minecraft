@@ -119,14 +119,27 @@ export class OtherPlayer extends THREE.Group {
    */
   updatePosition(position) {
     if (position) {
-      console.log(`OtherPlayer ${this.name} (${this.id}) - Setting position:`, position);
-      this.position.set(position.x, position.y, position.z);
+      console.log(`OtherPlayer ${this.playerName} (${this.playerId}) - Setting position:`, position);
+      
+      // In Minecraft, player position represents the position of their feet
+      // Our model's origin is at its center, so we need to offset the Y position
+      // to ensure the feet are at the correct Y coordinate
+      
+      // The player's total height is approximately 1.8 units (body height)
+      // So we need to offset the model by half this height (0.9) to align the feet
+      // with the ground at the given Y coordinate
+      
+      this.position.set(
+        position.x, 
+        position.y - 0.9, // Offset to align feet with the ground
+        position.z
+      );
       
       // Make player visible (in case it was hidden)
       this.visible = true;
       
       // Log the actual position after setting
-      console.log(`OtherPlayer ${this.name} actual position:`, 
+      console.log(`OtherPlayer ${this.playerName} actual position:`, 
                  {x: this.position.x, y: this.position.y, z: this.position.z});
     }
   }
