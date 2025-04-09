@@ -36,6 +36,10 @@ export class MultiplayerManager {
     let wsBaseUrl = '';
     if (backendUrl) {
       wsBaseUrl = backendUrl.replace(/^http/, 'ws');
+      // Make sure it includes the /api prefix
+      if (!wsBaseUrl.endsWith('/api')) {
+        wsBaseUrl = `${wsBaseUrl}/api`;
+      }
     } else {
       // Fallback to constructing from window location
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
