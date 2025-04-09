@@ -22,7 +22,7 @@ export class OtherPlayer extends THREE.Group {
     this.updatePosition(position);
     this.updateRotation(rotation);
     
-    console.log(`Created other player: ${name} (${id}) at position:`, position);
+    console.log(`Created other player: ${this.playerName} (${this.playerId}) at position:`, position);
   }
   
   /**
