@@ -271,10 +271,7 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
         except Exception as e:
             logger.error(f"Error during disconnect cleanup: {str(e)}")
 
-@app.websocket("/api/ws/{player_id}")
-async def api_websocket_endpoint(websocket: WebSocket, player_id: str):
-    """WebSocket endpoint with /api prefix for production environment"""
-    await websocket_endpoint(websocket, player_id)
+# We now handle both /ws/{player_id} and /api/ws/{player_id} in the main websocket_endpoint
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
