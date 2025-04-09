@@ -140,7 +140,7 @@ function App() {
       )}
       <div id="overlay" style={{ display: isNameEntered ? "none" : "flex" }}>
         <div id="instructions">
-          <h1>MINECRAFTjs</h1>
+          <h1>KKKraft</h1>
           {!isNameEntered ? (
             <form onSubmit={handleNameSubmit} className="name-form">
               <div className="input-container">
