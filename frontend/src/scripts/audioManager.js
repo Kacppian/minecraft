@@ -9,21 +9,94 @@ export class AudioManager {
     this.isMuted = false;
     this.volume = 0.5;
     
-    // List of sound URLs
-    this.soundUrls = {
-      // Background music
-      bgMusic: 'https://assets.mixkit.co/music/preview/mixkit-games-worldbeat-466.mp3',
-      
-      // Game sound effects
-      blockPlace: 'https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3',
-      blockBreak: 'https://assets.mixkit.co/sfx/preview/mixkit-player-jumping-in-a-video-game-2043.mp3',
-      playerJump: 'https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3',
-      playerLand: 'https://assets.mixkit.co/sfx/preview/mixkit-arcade-mechanical-bling-210.mp3',
-      
-      // SuperSaiyan transformation
-      superSaiyan: 'https://assets.mixkit.co/sfx/preview/mixkit-martial-arts-fast-punch-2047.mp3',
-      superSaiyanOff: 'https://assets.mixkit.co/sfx/preview/mixkit-martial-arts-punch-2052.mp3'
+    // Use simple sine wave sounds instead of external URLs to avoid loading issues
+    this.generateSounds = () => {
+      return {
+        // Background music - simple tone
+        playBgMusic: () => {
+          try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            
+            // Create a repeating pattern using oscillator nodes
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(440, ctx.currentTime); // A4 note
+            
+            // Reduce the volume
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            
+            // Connect and start
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            return { osc, gain, ctx };
+          } catch (e) {
+            console.error('Error generating background music:', e);
+            return null;
+          }
+        },
+        
+        // Game sound effects - simple beeps
+        playBlockPlace: () => {
+          this.playSimpleTone(600, 0.1);
+        },
+        
+        playBlockBreak: () => {
+          this.playSimpleTone(300, 0.1);
+        },
+        
+        playPlayerJump: () => {
+          this.playSimpleTone(800, 0.1);
+        },
+        
+        playPlayerLand: () => {
+          this.playSimpleTone(200, 0.1);
+        },
+        
+        // SuperSaiyan transformation
+        playSuperSaiyan: () => {
+          // Rising tone for activation
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.linearRampToValueAtTime(800, ctx.currentTime + 0.5);
+          
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.5);
+        },
+        
+        playSuperSaiyanOff: () => {
+          // Falling tone for deactivation
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(800, ctx.currentTime);
+          osc.frequency.linearRampToValueAtTime(200, ctx.currentTime + 0.5);
+          
+          gain.gain.setValueAtTime(0.2, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.5);
+        }
+      };
     };
+    
+    // Generate the sound functions
+    this.sounds = this.generateSounds();
     
     // Preload sounds
     this.preloadSounds();
