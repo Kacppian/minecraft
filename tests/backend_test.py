@@ -7,11 +7,8 @@ import uuid
 import os
 
 class TestMinecraftBackend:
-    def __init__(self):
-        self.base_url = "https://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api"
-        self.ws_url = "wss://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api/ws"
-        self.tests_run = 0
-        self.tests_passed = 0
+    base_url = "https://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api"
+    ws_url = "wss://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api/ws"
 
     def test_health_check(self):
         """Test the health check endpoint"""
