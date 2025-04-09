@@ -55,10 +55,13 @@ class ConnectionManager:
             "rotation": {"x": 0, "y": 0, "z": 0},
             "connected": True
         }
-        # Notify all clients about the new player
-        await self.broadcast_player_joined(player_id)
-        # Send existing players data to the new player
+        
+        # First send existing players data to the new player
         await self.send_existing_players(player_id)
+        
+        # Then notify all clients about the new player
+        await self.broadcast_player_joined(player_id)
+        
         logger.info(f"Player {player_name} ({player_id}) connected. Total players: {len(self.active_connections)}")
         
     def disconnect(self, player_id: str):
