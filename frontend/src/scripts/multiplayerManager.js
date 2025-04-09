@@ -35,20 +35,19 @@ export class MultiplayerManager {
     // Create WebSocket URL by replacing http/https with ws/wss
     let wsBaseUrl = '';
     if (backendUrl) {
+      // Replace http with ws, keeping the rest of the URL the same
       wsBaseUrl = backendUrl.replace(/^http/, 'ws');
-      // Make sure it includes the /api prefix
-      if (!wsBaseUrl.endsWith('/api')) {
-        wsBaseUrl = `${wsBaseUrl}/api`;
-      }
     } else {
-      // Fallback to constructing from window location
+      // Fallback to direct connection to current host
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      wsBaseUrl = `${protocol}//${window.location.host}/api`;
+      wsBaseUrl = `${protocol}//${window.location.host}`;
     }
     
+    // Try both paths - first without /api prefix for local development
     const wsUrl = `${wsBaseUrl}/ws/${this.playerId}`;
     
     console.log(`Connecting to WebSocket server at ${wsUrl}`);
+    console.log(`Player ID: ${this.playerId}, Name: ${this.playerName}`);
     
     this.socket = new WebSocket(wsUrl);
     
