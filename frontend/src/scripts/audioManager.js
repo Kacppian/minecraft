@@ -154,19 +154,17 @@ export class AudioManager {
    * @param {String} soundName - Name of the sound to play
    */
   playSound(soundName) {
-    if (this.isMuted || !this.sounds[soundName]) return;
+    if (this.isMuted) return;
     
     try {
-      // Clone the audio to allow overlapping sounds
-      const sound = this.sounds[soundName].cloneNode();
-      sound.volume = this.volume;
-      
-      // Play the sound
-      sound.play().catch(e => {
-        console.error(`Error playing sound "${soundName}":`, e);
-      });
-      
-      console.log(`Playing sound: ${soundName}`);
+      // Call the appropriate function based on the sound name
+      const methodName = 'play' + soundName.charAt(0).toUpperCase() + soundName.slice(1);
+      if (typeof this.sounds[methodName] === 'function') {
+        this.sounds[methodName]();
+        console.log(`Playing sound: ${soundName}`);
+      } else {
+        console.warn(`Sound "${soundName}" not found`);
+      }
     } catch (e) {
       console.error(`Error playing sound "${soundName}":`, e);
     }
@@ -176,15 +174,20 @@ export class AudioManager {
    * Start playing background music
    */
   playMusic() {
-    if (this.isMuted || !this.music || this.isMusicPlaying) return;
+    if (this.isMuted || this.isMusicPlaying) return;
     
     try {
-      this.music.play().then(() => {
+      // Stop any existing music
+      if (this.bgMusicNodes) {
+        this.pauseMusic();
+      }
+      
+      // Start new background music
+      this.bgMusicNodes = this.sounds.playBgMusic();
+      if (this.bgMusicNodes) {
         this.isMusicPlaying = true;
         console.log('Background music started');
-      }).catch(e => {
-        console.error('Error playing background music:', e);
-      });
+      }
     } catch (e) {
       console.error('Error playing background music:', e);
     }
@@ -194,10 +197,18 @@ export class AudioManager {
    * Pause background music
    */
   pauseMusic() {
-    if (!this.music || !this.isMusicPlaying) return;
+    if (!this.isMusicPlaying || !this.bgMusicNodes) return;
     
     try {
-      this.music.pause();
+      // Stop the oscillator and close the audio context
+      if (this.bgMusicNodes.osc) {
+        this.bgMusicNodes.osc.stop();
+      }
+      if (this.bgMusicNodes.ctx) {
+        this.bgMusicNodes.ctx.close();
+      }
+      
+      this.bgMusicNodes = null;
       this.isMusicPlaying = false;
       console.log('Background music paused');
     } catch (e) {
@@ -238,12 +249,6 @@ export class AudioManager {
    */
   setVolume(volume) {
     this.volume = Math.max(0, Math.min(1, volume));
-    
-    // Update music volume
-    if (this.music) {
-      this.music.volume = this.volume * 0.3;
-    }
-    
     console.log(`Volume set to ${this.volume}`);
     return this.volume;
   }
@@ -253,12 +258,13 @@ export class AudioManager {
    * @param {Boolean} active - Whether SuperSaiyan mode is being activated or deactivated
    */
   playSuperSaiyanSound(active) {
-    const soundName = active ? 'superSaiyan' : 'superSaiyanOff';
-    this.playSound(soundName);
+    if (this.isMuted) return;
     
-    // If SuperSaiyan is activated, add a voice effect
-    if (active && !this.isMuted) {
-      // Use the Web Speech API for the voice
+    if (active) {
+      // Play activation sound
+      this.sounds.playSuperSaiyan();
+      
+      // Use the Web Speech API for the voice if available
       try {
         const utterance = new SpeechSynthesisUtterance('Power up!');
         utterance.rate = 1.0; // Speed of speech
@@ -270,6 +276,9 @@ export class AudioManager {
       } catch (e) {
         console.error('Speech synthesis not supported:', e);
       }
+    } else {
+      // Play deactivation sound
+      this.sounds.playSuperSaiyanOff();
     }
   }
 }
