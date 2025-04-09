@@ -273,6 +273,26 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                     else:
                         logger.warning(f"Invalid block_update data from {player_id}: {block_data}")
                 
+                elif message_type == "chat_message":
+                    chat_text = message.get("text", "").strip()
+                    if chat_text:
+                        logger.info(f"Chat message from {player_name} ({player_id}): {chat_text}")
+                        # Broadcast chat message to all players
+                        for connection_id, connection in manager.active_connections.items():
+                            try:
+                                await connection.send_text(
+                                    json.dumps({
+                                        "type": "chat_message",
+                                        "player_id": player_id,
+                                        "text": chat_text
+                                    })
+                                )
+                                logger.debug(f"Sent chat message to {connection_id}")
+                            except Exception as e:
+                                logger.error(f"Error sending chat message to {connection_id}: {str(e)}")
+                    else:
+                        logger.warning(f"Empty chat message from {player_id}")
+                
                 # Add more message types as needed
                 
             except json.JSONDecodeError:
