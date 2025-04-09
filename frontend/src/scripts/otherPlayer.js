@@ -47,11 +47,11 @@ export class OtherPlayer extends THREE.Group {
     
     // Left arm
     this.leftArm = new THREE.Mesh(armGeometry, armMaterial);
-    this.leftArm.position.set(-0.4, 0.9, 0);
+    this.leftArm.position.set(-0.425, 1.2, 0);
     
     // Right arm
     this.rightArm = new THREE.Mesh(armGeometry, armMaterial);
-    this.rightArm.position.set(0.4, 0.9, 0);
+    this.rightArm.position.set(0.425, 1.2, 0);
     
     // Create player legs
     const legGeometry = new THREE.BoxGeometry(0.25, 0.6, 0.25);
