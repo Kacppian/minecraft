@@ -121,15 +121,37 @@ class ConnectionManager:
                         self.player_states[player_id][key][coord] = val
             
             # Broadcast to all other players
+            broadcast_count = 0
             for connection_id, connection in self.active_connections.items():
                 if connection_id != player_id:  # Don't send back to the player who made the update
-                    await connection.send_text(
-                        json.dumps({
-                            "type": "player_state_update",
-                            "player_id": player_id,
-                            "state": update_data
-                        })
-                    )
+                    try:
+                        await connection.send_text(
+                            json.dumps({
+                                "type": "player_state_update",
+                                "player_id": player_id,
+                                "state": update_data
+                            })
+                        )
+                        broadcast_count += 1
+                    except Exception as e:
+                        logger.error(f"Error broadcasting state update to {connection_id}: {str(e)}")
+            
+            # Periodically log player states for debugging
+            current_time = time.time()
+            if current_time - self.last_debug_log > 10:  # Log every 10 seconds
+                active_players = {pid: state for pid, state in self.player_states.items() 
+                                if pid in self.active_connections}
+                
+                logger.info(f"Active connections: {len(self.active_connections)}, Active players: {len(active_players)}")
+                if active_players:
+                    for pid, state in active_players.items():
+                        logger.info(f"Player {state['name']} ({pid}) - pos: {state['position']}")
+                
+                # Log broadcast info
+                if broadcast_count > 0:
+                    logger.info(f"Broadcast state update from {player_id} to {broadcast_count} other players")
+                
+                self.last_debug_log = current_time
 
     async def broadcast_block_update(self, player_id: str, block_data: dict):
         """Broadcast block updates to all players except the one who made the change"""
