@@ -131,9 +131,59 @@ export class MultiplayerManager {
         this.handleBlockUpdate(message.data);
         break;
         
+      case 'chat_message':
+        console.log('Chat message received:', message);
+        this.handleChatMessage(message.player_id, message.text);
+        break;
+        
       default:
         console.warn('Unknown message type:', message.type);
     }
+  }
+  
+  /**
+   * Handle chat message from another player
+   * @param {String} playerId - ID of the player who sent the message
+   * @param {String} text - The chat message text
+   */
+  handleChatMessage(playerId, text) {
+    console.log(`Chat from ${playerId}: ${text}`);
+    
+    // Find the other player instance
+    const player = this.otherPlayers.get(playerId);
+    if (player) {
+      // Display chat bubble above the player
+      player.showChatBubble(text);
+      
+      // Also display the message in the console
+      console.log(`${player.playerName}: ${text}`);
+      
+      // Show a status message briefly
+      document.getElementById('status').textContent = `${player.playerName}: ${text}`;
+      setTimeout(() => {
+        document.getElementById('status').textContent = '';
+      }, 5000);
+    }
+  }
+  
+  /**
+   * Send a chat message to all players
+   * @param {String} text - The chat message text
+   */
+  sendChatMessage(text) {
+    if (!this.connected) return;
+    
+    this.socket.send(JSON.stringify({
+      type: 'chat_message',
+      text: text
+    }));
+    
+    // Show our own chat bubble above our player
+    // This is a bit of a hack since we don't have a model for our own player
+    document.getElementById('status').textContent = `You: ${text}`;
+    setTimeout(() => {
+      document.getElementById('status').textContent = '';
+    }, 5000);
   }
   
   /**
