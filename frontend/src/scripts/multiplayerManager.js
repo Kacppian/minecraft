@@ -87,25 +87,40 @@ export class MultiplayerManager {
     // Log all incoming messages for debugging
     console.log('Received WebSocket message:', message);
     
+    // Ignore messages about our own player
+    if ((message.type === 'player_state_update' && message.player_id === this.playerId) ||
+        (message.type === 'player_joined' && message.player && message.player.id === this.playerId)) {
+      console.log('Ignoring message about own player');
+      return;
+    }
+    
     switch (message.type) {
       case 'player_joined':
         console.log('Player joined event received:', message.player);
-        this.handlePlayerJoined(message.player);
+        if (message.player && message.player.id !== this.playerId) {
+          this.handlePlayerJoined(message.player);
+        }
         break;
         
       case 'player_left':
         console.log('Player left event received:', message.player_id);
-        this.handlePlayerLeft(message.player_id);
+        if (message.player_id !== this.playerId) {
+          this.handlePlayerLeft(message.player_id);
+        }
         break;
         
       case 'player_state_update':
         console.log('Player state update:', message.player_id, message.state);
-        this.handlePlayerStateUpdate(message.player_id, message.state);
+        if (message.player_id !== this.playerId) {
+          this.handlePlayerStateUpdate(message.player_id, message.state);
+        }
         break;
         
       case 'existing_players':
         console.log('Existing players:', message.players);
-        this.handleExistingPlayers(message.players);
+        // Filter out our own player from the list if present
+        const filteredPlayers = message.players.filter(p => p.id !== this.playerId);
+        this.handleExistingPlayers(filteredPlayers);
         break;
         
       case 'block_update':
