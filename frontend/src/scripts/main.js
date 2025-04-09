@@ -34,6 +34,9 @@ const physics = new Physics(scene);
 
 // Initialize multiplayer manager
 const multiplayer = new MultiplayerManager(scene, player);
+// Make it globally accessible for the Player class
+window.multiplayer = multiplayer;
+
 // Connect to WebSocket server when the game starts
 document.addEventListener('keydown', function setupMultiplayer() {
   // Only set up once
