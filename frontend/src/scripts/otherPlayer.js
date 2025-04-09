@@ -95,7 +95,7 @@ export class OtherPlayer extends THREE.Group {
     context.textBaseline = 'middle';
     
     // Draw player name
-    context.fillText(this.name, canvas.width / 2, canvas.height / 2);
+    context.fillText(this.playerName, canvas.width / 2, canvas.height / 2);
     
     // Create texture from canvas
     const texture = new THREE.CanvasTexture(canvas);
