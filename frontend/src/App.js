@@ -170,9 +170,7 @@ function App() {
                 F1 - Save Game<br />
                 F2 - Load Game<br />
                 F10 - Debug Camera<br />
-                <br />
-                <b>Special Chat Commands:</b><br />
-                "supersaiyan" - Transform!
+
               </div>
             </form>
           ) : (
