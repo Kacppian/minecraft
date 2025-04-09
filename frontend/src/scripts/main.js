@@ -96,14 +96,14 @@ function animate() {
   const currentTime = performance.now();
   const dt = (currentTime - previousTime) / 1000;
 
+  // Always update multiplayer to render other players even when not locked
+  multiplayer.update(dt);
+  
   // Only update physics when player controls are locked
   if (player.controls.isLocked) {
     physics.update(dt, player, world);
     player.update(world);
     world.update(player);
-    
-    // Update multiplayer state
-    multiplayer.update(dt);
 
     // Position the sun relative to the player. Need to adjust both the
     // position and target of the sun to keep the same sun angle
@@ -114,6 +114,14 @@ function animate() {
     // Update positon of the orbit camera to track player 
     orbitCamera.position.copy(player.position).add(new THREE.Vector3(16, 16, 16));
     controls.target.copy(player.position);
+    
+    // Display debug info - show number of other players
+    const infoElement = document.getElementById('info-player-position');
+    if (infoElement) {
+      const otherPlayersCount = multiplayer.otherPlayers.size;
+      const posInfo = player.getPositionString();
+      infoElement.innerHTML = `${posInfo}<br>Other players: ${otherPlayersCount}`;
+    }
   }
 
   renderer.render(scene, player.controls.isLocked ? player.camera : orbitCamera);
