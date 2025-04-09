@@ -145,21 +145,20 @@ class ConnectionManager:
                     for coord, val in value.items():
                         self.player_states[player_id][key][coord] = val
             
-            # Broadcast to all other players
+            # Broadcast to ALL players - the frontend will filter its own updates
             broadcast_count = 0
             for connection_id, connection in self.active_connections.items():
-                if connection_id != player_id:  # Don't send back to the player who made the update
-                    try:
-                        await connection.send_text(
-                            json.dumps({
-                                "type": "player_state_update",
-                                "player_id": player_id,
-                                "state": update_data
-                            })
-                        )
-                        broadcast_count += 1
-                    except Exception as e:
-                        logger.error(f"Error broadcasting state update to {connection_id}: {str(e)}")
+                try:
+                    await connection.send_text(
+                        json.dumps({
+                            "type": "player_state_update",
+                            "player_id": player_id,
+                            "state": update_data
+                        })
+                    )
+                    broadcast_count += 1
+                except Exception as e:
+                    logger.error(f"Error broadcasting state update to {connection_id}: {str(e)}")
             
             # Periodically log player states for debugging
             current_time = time.time()
@@ -173,8 +172,7 @@ class ConnectionManager:
                         logger.info(f"Player {state['name']} ({pid}) - pos: {state['position']}")
                 
                 # Log broadcast info
-                if broadcast_count > 0:
-                    logger.info(f"Broadcast state update from {player_id} to {broadcast_count} other players")
+                logger.info(f"Broadcast state update from {player_id} to {broadcast_count} players")
                 
                 self.last_debug_log = current_time
 
