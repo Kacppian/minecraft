@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { SimplexNoise } from 'three/examples/jsm/math/SimplexNoise.js';
 import { RNG } from './rng';
 import { blocks, resources } from './blocks';
+import audioManager from './audioManager';
 
 const geometry = new THREE.BoxGeometry();
 
