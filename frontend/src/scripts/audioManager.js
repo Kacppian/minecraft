@@ -103,58 +103,50 @@ export class AudioManager {
   }
   
   /**
-   * Preload all game sounds
+   * Create a simple tone using Web Audio API
+   * @param {Number} frequency - Frequency of the tone in Hz
+   * @param {Number} duration - Duration of the tone in seconds
+   */
+  playSimpleTone(frequency, duration) {
+    if (this.isMuted) return;
+    
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(frequency, ctx.currentTime);
+      
+      gain.gain.setValueAtTime(this.volume * 0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+      
+      console.log(`Playing tone: ${frequency}Hz for ${duration}s`);
+    } catch (e) {
+      console.error('Error playing tone:', e);
+    }
+  }
+  
+  /**
+   * Initialize audio context
    */
   preloadSounds() {
-    // Create audio context
+    // Create audio context if needed
     try {
       this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       console.log('Audio context created successfully');
     } catch (e) {
       console.error('Failed to create audio context:', e);
-      return;
     }
     
-    // Preload all sound effects
-    Object.keys(this.soundUrls).forEach(soundName => {
-      if (soundName !== 'bgMusic') { // Skip background music, we'll load it separately
-        const audio = new Audio();
-        audio.src = this.soundUrls[soundName];
-        audio.preload = 'auto';
-        this.sounds[soundName] = audio;
-        
-        // Add event listeners for debugging
-        audio.addEventListener('canplaythrough', () => {
-          console.log(`Sound "${soundName}" loaded successfully`);
-        });
-        
-        audio.addEventListener('error', (e) => {
-          console.error(`Error loading sound "${soundName}":`, e);
-        });
-      }
-    });
-    
-    // Prepare background music
-    this.prepareBackgroundMusic();
-  }
-  
-  /**
-   * Set up background music with looping
-   */
-  prepareBackgroundMusic() {
-    this.music = new Audio();
-    this.music.src = this.soundUrls.bgMusic;
-    this.music.loop = true;
-    this.music.volume = this.volume * 0.3; // Background music slightly quieter
-    
-    // Add event listeners for debugging
-    this.music.addEventListener('canplaythrough', () => {
-      console.log('Background music loaded successfully');
-    });
-    
-    this.music.addEventListener('error', (e) => {
-      console.error('Error loading background music:', e);
-    });
+    // No actual preloading needed with our generated sounds
+    console.log('Audio system initialized with generated sounds');
   }
   
   /**
