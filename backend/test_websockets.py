@@ -21,7 +21,7 @@ logging.basicConfig(
 logger = logging.getLogger("WebSocketTester")
 
 # Default WebSocket server URL
-WS_SERVER_URL = "ws://localhost:8000/ws"
+WS_SERVER_URL = "ws://localhost:8001/ws"
 
 class MinecraftClient:
     """Simulates a Minecraft client connecting to the server via WebSocket"""
