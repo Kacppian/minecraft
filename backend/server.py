@@ -292,6 +292,23 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                                 logger.error(f"Error sending chat message to {connection_id}: {str(e)}")
                     else:
                         logger.warning(f"Empty chat message from {player_id}")
+                        
+                elif message_type == "supersaiyan_toggle":
+                    active = message.get("active", False)
+                    logger.info(f"SuperSaiyan toggle from {player_name} ({player_id}): {active}")
+                    # Broadcast SuperSaiyan toggle to all players
+                    for connection_id, connection in manager.active_connections.items():
+                        try:
+                            await connection.send_text(
+                                json.dumps({
+                                    "type": "supersaiyan_toggle",
+                                    "player_id": player_id,
+                                    "active": active
+                                })
+                            )
+                            logger.debug(f"Sent SuperSaiyan toggle to {connection_id}")
+                        except Exception as e:
+                            logger.error(f"Error sending SuperSaiyan toggle to {connection_id}: {str(e)}")
                 
                 # Add more message types as needed
                 
