@@ -467,6 +467,11 @@ export class MultiplayerManager {
         player.setSuperSaiyanMode(active);
       }
       
+      // Play sound effect for other player's transformation
+      if (window.audioManager) {
+        window.audioManager.playSuperSaiyanSound(active);
+      }
+      
       // Display a status message
       document.getElementById('status').textContent = `${player.playerName} ${active ? 'activated' : 'deactivated'} SuperSaiyan mode!`;
       setTimeout(() => {
