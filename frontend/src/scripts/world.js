@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { WorldChunk } from './worldChunk';
 import { DataStore } from './dataStore';
+import audioManager from './audioManager';
 
 export class World extends THREE.Group {
 
