@@ -38,10 +38,10 @@ const multiplayer = new MultiplayerManager(scene, player);
 // Make it globally accessible for the Player class
 window.multiplayer = multiplayer;
 
-// Connect to WebSocket server when the game starts
-document.addEventListener('keydown', function setupMultiplayer() {
+// Connect to WebSocket server and start audio when the game starts
+document.addEventListener('keydown', function setupGame() {
   // Only set up once
-  document.removeEventListener('keydown', setupMultiplayer);
+  document.removeEventListener('keydown', setupGame);
   
   // Connect to the WebSocket server
   multiplayer.connect();
@@ -51,6 +51,37 @@ document.addEventListener('keydown', function setupMultiplayer() {
   setTimeout(() => {
     document.getElementById('status').textContent = '';
   }, 3000);
+  
+  // Start background music
+  try {
+    audioManager.playMusic();
+    console.log('Background music started');
+  } catch (e) {
+    console.error('Failed to start background music:', e);
+  }
+  
+  // Add keyboard shortcuts for audio control
+  document.addEventListener('keydown', (e) => {
+    // M key to toggle music
+    if (e.key === 'm') {
+      audioManager.toggleMusic();
+      document.getElementById('status').textContent = 
+        `Music ${audioManager.isMusicPlaying ? 'On' : 'Off'}`;
+      setTimeout(() => {
+        document.getElementById('status').textContent = '';
+      }, 1500);
+    }
+    
+    // N key to toggle all sound (mute)
+    if (e.key === 'n') {
+      const isMuted = audioManager.toggleMute();
+      document.getElementById('status').textContent = 
+        `Sound ${isMuted ? 'Muted' : 'Unmuted'}`;
+      setTimeout(() => {
+        document.getElementById('status').textContent = '';
+      }, 1500);
+    }
+  });
 }, { once: true });
 
 // Camera setup
