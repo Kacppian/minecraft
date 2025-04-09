@@ -23,6 +23,9 @@ export class MultiplayerManager {
     // Store last sent position and rotation to avoid sending duplicates
     this.lastSentPosition = { x: 0, y: 0, z: 0 };
     this.lastSentRotation = { x: 0, y: 0, z: 0 };
+    
+    // SuperSaiyan mode state
+    this.isSuperSaiyanMode = false;
   }
   
   /**
