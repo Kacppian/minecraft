@@ -114,7 +114,15 @@ export class OtherPlayer extends THREE.Group {
    */
   updatePosition(position) {
     if (position) {
+      console.log(`OtherPlayer ${this.name} (${this.id}) - Setting position:`, position);
       this.position.set(position.x, position.y, position.z);
+      
+      // Make player visible (in case it was hidden)
+      this.visible = true;
+      
+      // Log the actual position after setting
+      console.log(`OtherPlayer ${this.name} actual position:`, 
+                 {x: this.position.x, y: this.position.y, z: this.position.z});
     }
   }
   
@@ -124,11 +132,15 @@ export class OtherPlayer extends THREE.Group {
    */
   updateRotation(rotation) {
     if (rotation) {
+      console.log(`OtherPlayer ${this.name} (${this.id}) - Setting rotation:`, rotation);
+      
       // Rotate the head and body based on y-axis rotation (looking left/right)
       this.body.rotation.y = rotation.y;
       this.head.rotation.y = rotation.y;
       
-      // You can add more complex animations based on movement here
+      // Log the actual rotation after setting
+      console.log(`OtherPlayer ${this.name} actual head rotation:`, 
+                 {x: this.head.rotation.x, y: this.head.rotation.y, z: this.head.rotation.z});
     }
   }
   
