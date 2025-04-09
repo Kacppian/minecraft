@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 function App() {
   const [playerName, setPlayerName] = useState("");
   const [isNameEntered, setIsNameEntered] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessage, setChatMessage] = useState("");
+  const chatInputRef = useRef(null);
 
   useEffect(() => {
     if (isNameEntered) {
@@ -19,12 +22,44 @@ function App() {
           if (nameDisplay) {
             nameDisplay.textContent = playerName;
           }
+          
+          // Setup chat keyboard listener
+          document.addEventListener('keydown', handleChatKeyDown);
         })
         .catch(error => {
           console.error("Error loading Minecraft game:", error);
         });
+        
+      // Cleanup event listener when component unmounts
+      return () => {
+        document.removeEventListener('keydown', handleChatKeyDown);
+      };
     }
   }, [isNameEntered, playerName]);
+  
+  // Handle keyboard events for chat
+  const handleChatKeyDown = (e) => {
+    // Only activate if the game is running
+    if (!isNameEntered) return;
+    
+    // Check if 'c' key is pressed and chat is closed
+    if (e.key === 'c' && !isChatOpen) {
+      e.preventDefault();
+      setIsChatOpen(true);
+      setTimeout(() => {
+        if (chatInputRef.current) {
+          chatInputRef.current.focus();
+        }
+      }, 10);
+    }
+    
+    // Check if Escape key is pressed and chat is open
+    if (e.key === 'Escape' && isChatOpen) {
+      e.preventDefault();
+      setIsChatOpen(false);
+      setChatMessage("");
+    }
+  };
 
   const handleNameSubmit = (e) => {
     e.preventDefault();
