@@ -173,6 +173,107 @@ export class OtherPlayer extends THREE.Group {
   }
   
   /**
+   * Creates a chat bubble above the player
+   * @param {String} text - The text message to display
+   */
+  showChatBubble(text) {
+    // Clear any existing chat timeout
+    if (this.chatTimeout) {
+      clearTimeout(this.chatTimeout);
+      this.chatTimeout = null;
+    }
+    
+    // Remove existing chat bubble if there is one
+    if (this.chatBubble) {
+      this.remove(this.chatBubble);
+      this.chatBubble.material.dispose();
+      this.chatBubble = null;
+    }
+    
+    // Create canvas for chat bubble
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 512;  // Wider for chat messages
+    canvas.height = 128;
+    
+    // Set background with rounded corners (as much as possible in canvas)
+    context.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    roundRect(context, 0, 0, canvas.width, canvas.height, 20, true, false);
+    
+    // Set text properties
+    context.font = 'Bold 24px Arial';
+    context.fillStyle = 'black';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    
+    // Draw chat message with word wrap
+    wrapText(context, text, canvas.width/2, canvas.height/2, canvas.width - 40, 28);
+    
+    // Create texture from canvas
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+    
+    // Create a sprite material with the texture
+    const material = new THREE.SpriteMaterial({ map: texture });
+    
+    // Create sprite with the material
+    this.chatBubble = new THREE.Sprite(material);
+    this.chatBubble.scale.set(4, 1, 1);  // Wide chat bubble
+    this.chatBubble.position.y = 3.5;    // Position well above the player's head
+    
+    // Add chat bubble to player model
+    this.add(this.chatBubble);
+    
+    // Set timeout to remove chat bubble after a few seconds
+    this.chatTimeout = setTimeout(() => {
+      this.remove(this.chatBubble);
+      this.chatBubble.material.dispose();
+      this.chatBubble = null;
+      this.chatTimeout = null;
+    }, 8000);  // Display for 8 seconds
+    
+    // Helper function to draw rounded rectangles
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+    
+    // Helper function to wrap text
+    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      let lineCount = 0;
+      
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        const testWidth = metrics.width;
+        
+        if (testWidth > maxWidth && n > 0) {
+          ctx.fillText(line, x, y - lineHeight * 0.5 + lineCount * lineHeight);
+          line = words[n] + ' ';
+          lineCount++;
+        } else {
+          line = testLine;
+        }
+      }
+      
+      ctx.fillText(line, x, y - lineHeight * 0.5 + lineCount * lineHeight);
+    }
+  }
+  
+  /**
    * Animates the player model based on movement
    * @param {Number} deltaTime - Time since last frame in seconds
    * @param {Boolean} isMoving - Whether the player is currently moving
@@ -195,9 +296,13 @@ export class OtherPlayer extends THREE.Group {
       this.rightArm.rotation.x = 0;
     }
     
-    // Always make the name tag face the camera
+    // Always make the name tag and chat bubble face the camera
     if (this.nameTag) {
       this.nameTag.quaternion.copy(this.parent.quaternion);
+    }
+    
+    if (this.chatBubble) {
+      this.chatBubble.quaternion.copy(this.parent.quaternion);
     }
   }
 }
