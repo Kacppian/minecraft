@@ -107,7 +107,7 @@ export class OtherPlayer extends THREE.Group {
     // Create sprite with the material
     this.nameTag = new THREE.Sprite(material);
     this.nameTag.scale.set(2, 0.5, 1);
-    this.nameTag.position.y = 2.5; // Position above the player's head
+    this.nameTag.position.y = 2.7; // Position above the player's head
     
     // Add name tag to player model
     this.add(this.nameTag);
