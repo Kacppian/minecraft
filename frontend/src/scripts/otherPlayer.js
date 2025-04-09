@@ -6,8 +6,8 @@ import * as THREE from 'three';
 export class OtherPlayer extends THREE.Group {
   constructor(id, name, position, rotation) {
     super();
-    this.id = id;
-    this.name = name;
+    this.playerId = id;  // Use playerId instead of id to avoid conflict with THREE.Object3D
+    this.playerName = name;  // Also rename name to be consistent
     
     // Create player model
     this.createPlayerModel();
