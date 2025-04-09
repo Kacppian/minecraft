@@ -13,19 +13,11 @@ class TestMinecraftBackend:
     def test_health_check(self):
         """Test the health check endpoint"""
         print("\n🔍 Testing Health Check API...")
-        try:
-            response = requests.get(f"{self.base_url}/")
-            assert response.status_code == 200
-            data = response.json()
-            assert data["message"] == "Hello World"
-            print("✅ Health Check API test passed")
-            self.tests_run += 1
-            self.tests_passed += 1
-            return True
-        except Exception as e:
-            print(f"❌ Health Check API test failed: {str(e)}")
-            self.tests_run += 1
-            return False
+        response = requests.get(f"{self.base_url}/")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["message"] == "Hello World"
+        print("✅ Health Check API test passed")
 
     async def test_websocket_connection(self):
         """Test basic WebSocket connection and player joining"""
