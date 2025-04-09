@@ -375,7 +375,7 @@ export class MultiplayerManager {
         console.log('Other players:', Array.from(this.otherPlayers.entries()).map(([id, player]) => {
           return {
             id: id,
-            name: player.name,
+            name: player.playerName || player.name || 'Unknown',
             position: {
               x: player.position.x.toFixed(2),
               y: player.position.y.toFixed(2),
