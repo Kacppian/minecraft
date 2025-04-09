@@ -29,8 +29,20 @@ export class MultiplayerManager {
    * Initialize the WebSocket connection
    */
   connect() {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/api/ws/${this.playerId}`;
+    // Get the BACKEND_URL from environment
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    
+    // Create WebSocket URL by replacing http/https with ws/wss
+    let wsBaseUrl = '';
+    if (backendUrl) {
+      wsBaseUrl = backendUrl.replace(/^http/, 'ws');
+    } else {
+      // Fallback to constructing from window location
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      wsBaseUrl = `${protocol}//${window.location.host}/api`;
+    }
+    
+    const wsUrl = `${wsBaseUrl}/ws/${this.playerId}`;
     
     console.log(`Connecting to WebSocket server at ${wsUrl}`);
     
