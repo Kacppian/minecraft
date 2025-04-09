@@ -43,8 +43,8 @@ export class MultiplayerManager {
       wsBaseUrl = `${protocol}//${window.location.host}`;
     }
     
-    // Try both paths - first without /api prefix for local development
-    const wsUrl = `${wsBaseUrl}/ws/${this.playerId}`;
+    // Use /api/ws consistently for all environments
+    const wsUrl = `${wsBaseUrl}/api/ws/${this.playerId}`;
     
     console.log(`Connecting to WebSocket server at ${wsUrl}`);
     console.log(`Player ID: ${this.playerId}, Name: ${this.playerName}`);
