@@ -187,15 +187,17 @@ class ConnectionManager:
                 self.last_debug_log = current_time
 
     async def broadcast_block_update(self, player_id: str, block_data: dict):
-        """Broadcast block updates to all players except the one who made the change"""
+        """Broadcast block updates to all players"""
         for connection_id, connection in self.active_connections.items():
-            if connection_id != player_id:
+            try:
                 await connection.send_text(
                     json.dumps({
                         "type": "block_update",
                         "data": block_data
                     })
                 )
+            except Exception as e:
+                logger.error(f"Error broadcasting block update to {connection_id}: {str(e)}")
 
 # Initialize connection manager
 manager = ConnectionManager()
