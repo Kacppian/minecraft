@@ -159,22 +159,47 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
         
         # Handle incoming messages
         while True:
-            data = await websocket.receive_text()
-            message = json.loads(data)
-            message_type = message.get("type", "")
-            
-            if message_type == "position_update":
-                await manager.update_player_state(player_id, {"position": message.get("position", {})})
-            
-            elif message_type == "rotation_update":
-                await manager.update_player_state(player_id, {"rotation": message.get("rotation", {})})
-            
-            elif message_type == "block_update":
-                await manager.broadcast_block_update(player_id, message.get("data", {}))
-            
-            # Add more message types as needed
+            try:
+                data = await websocket.receive_text()
+                message = json.loads(data)
+                message_type = message.get("type", "")
+                
+                logger.info(f"Received message from {player_name} ({player_id}): {message_type}")
+                
+                if message_type == "position_update":
+                    position = message.get("position", {})
+                    if all(k in position for k in ["x", "y", "z"]):
+                        await manager.update_player_state(player_id, {"position": position})
+                    else:
+                        logger.warning(f"Invalid position data from {player_id}: {position}")
+                
+                elif message_type == "rotation_update":
+                    rotation = message.get("rotation", {})
+                    if all(k in rotation for k in ["x", "y", "z"]):
+                        await manager.update_player_state(player_id, {"rotation": rotation})
+                    else:
+                        logger.warning(f"Invalid rotation data from {player_id}: {rotation}")
+                
+                elif message_type == "block_update":
+                    block_data = message.get("data", {})
+                    if "action" in block_data and "x" in block_data and "y" in block_data and "z" in block_data:
+                        await manager.broadcast_block_update(player_id, block_data)
+                    else:
+                        logger.warning(f"Invalid block_update data from {player_id}: {block_data}")
+                
+                # Add more message types as needed
+                
+            except json.JSONDecodeError:
+                logger.error(f"Invalid JSON from {player_id}")
+            except Exception as e:
+                logger.error(f"Error processing message from {player_id}: {str(e)}")
                 
     except WebSocketDisconnect:
+        logger.info(f"WebSocket disconnected for player {player_id}")
+        manager.disconnect(player_id)
+        await manager.broadcast_player_left(player_id)
+    except Exception as e:
+        logger.error(f"WebSocket error for player {player_id}: {str(e)}")
         manager.disconnect(player_id)
         await manager.broadcast_player_left(player_id)
 
