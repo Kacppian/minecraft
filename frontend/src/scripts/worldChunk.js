@@ -37,6 +37,7 @@ export class WorldChunk extends THREE.Group {
     this.generateMeshes();
 
     this.loaded = true;
+    this.isGenerated = true;
 
     //console.log(`Loaded chunk in ${performance.now() - start}ms`);
   }
