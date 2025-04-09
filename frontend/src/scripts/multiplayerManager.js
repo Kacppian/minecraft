@@ -419,6 +419,58 @@ export class MultiplayerManager {
   }
   
   /**
+   * Toggle SuperSaiyan mode for the local player
+   */
+  toggleSuperSaiyanMode() {
+    if (!this.connected) return;
+    
+    // Toggle the state
+    this.isSuperSaiyanMode = !this.isSuperSaiyanMode;
+    console.log(`SuperSaiyan mode ${this.isSuperSaiyanMode ? 'activated' : 'deactivated'} for local player`);
+    
+    // Apply visual effect to local player (handled in the Player class)
+    if (this.localPlayer && typeof this.localPlayer.setSuperSaiyanMode === 'function') {
+      this.localPlayer.setSuperSaiyanMode(this.isSuperSaiyanMode);
+    }
+    
+    // Send message to server to broadcast to other players
+    this.socket.send(JSON.stringify({
+      type: 'supersaiyan_toggle',
+      active: this.isSuperSaiyanMode
+    }));
+    
+    // Display a status message
+    document.getElementById('status').textContent = `SuperSaiyan mode ${this.isSuperSaiyanMode ? 'activated' : 'deactivated'}!`;
+    setTimeout(() => {
+      document.getElementById('status').textContent = '';
+    }, 3000);
+  }
+  
+  /**
+   * Handle supersaiyan toggle message from another player
+   * @param {String} playerId - ID of the player who toggled SuperSaiyan mode
+   * @param {Boolean} active - Whether SuperSaiyan mode is active or not
+   */
+  handleSuperSaiyanToggle(playerId, active) {
+    console.log(`SuperSaiyan toggle for player ${playerId}: ${active}`);
+    
+    // Find the other player instance
+    const player = this.otherPlayers.get(playerId);
+    if (player) {
+      // Apply visual effect to the player model
+      if (typeof player.setSuperSaiyanMode === 'function') {
+        player.setSuperSaiyanMode(active);
+      }
+      
+      // Display a status message
+      document.getElementById('status').textContent = `${player.playerName} ${active ? 'activated' : 'deactivated'} SuperSaiyan mode!`;
+      setTimeout(() => {
+        document.getElementById('status').textContent = '';
+      }, 3000);
+    }
+  }
+
+  /**
    * Update method to be called every frame
    * @param {Number} deltaTime - Time since last frame
    */
