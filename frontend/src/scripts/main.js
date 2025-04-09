@@ -98,6 +98,9 @@ function animate() {
     physics.update(dt, player, world);
     player.update(world);
     world.update(player);
+    
+    // Update multiplayer state
+    multiplayer.update(dt);
 
     // Position the sun relative to the player. Need to adjust both the
     // position and target of the sun to keep the same sun angle
