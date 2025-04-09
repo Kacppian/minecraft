@@ -85,24 +85,32 @@ export class MultiplayerManager {
    * @param {Object} message - The parsed message from the server
    */
   handleMessage(message) {
+    // Log all incoming messages for debugging
+    console.log('Received WebSocket message:', message);
+    
     switch (message.type) {
       case 'player_joined':
+        console.log('Player joined event received:', message.player);
         this.handlePlayerJoined(message.player);
         break;
         
       case 'player_left':
+        console.log('Player left event received:', message.player_id);
         this.handlePlayerLeft(message.player_id);
         break;
         
       case 'player_state_update':
+        console.log('Player state update:', message.player_id, message.state);
         this.handlePlayerStateUpdate(message.player_id, message.state);
         break;
         
       case 'existing_players':
+        console.log('Existing players:', message.players);
         this.handleExistingPlayers(message.players);
         break;
         
       case 'block_update':
+        console.log('Block update:', message.data);
         this.handleBlockUpdate(message.data);
         break;
         
