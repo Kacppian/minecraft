@@ -280,6 +280,146 @@ export class OtherPlayer extends THREE.Group {
   }
   
   /**
+   * Sets the SuperSaiyan mode for the player
+   * @param {Boolean} active - Whether to activate or deactivate SuperSaiyan mode
+   */
+  setSuperSaiyanMode(active) {
+    console.log(`Setting SuperSaiyan mode for ${this.playerName} to ${active}`);
+    this.isSuperSaiyanMode = active;
+    
+    if (active) {
+      // Change player appearance for SuperSaiyan mode
+      
+      // Change body color to bright golden yellow
+      this.body.material.color.set(0xFFD700);
+      this.leftArm.material.color.set(0xFFD700);
+      this.rightArm.material.color.set(0xFFD700);
+      
+      // Make head glow
+      this.head.material.emissive = new THREE.Color(0xFF9900);
+      this.head.material.emissiveIntensity = 0.5;
+      
+      // Create fire particle effect if it doesn't exist
+      if (!this.fireParticles) {
+        // Create a simple particle system for fire effect
+        const particleCount = 50;
+        const particleGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        
+        // Create random starting positions for particles
+        for (let i = 0; i < particleCount * 3; i += 3) {
+          // Random position around the head
+          positions[i] = (Math.random() - 0.5) * 0.8;
+          positions[i + 1] = 2.0 + (Math.random() * 0.4);  // Above the head
+          positions[i + 2] = (Math.random() - 0.5) * 0.8;
+        }
+        
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        
+        // Create materials for particles with different colors for fire effect
+        const particleMaterial = new THREE.PointsMaterial({
+          color: 0xFF5500,
+          size: 0.2,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending
+        });
+        
+        this.fireParticles = new THREE.Points(particleGeometry, particleMaterial);
+        this.add(this.fireParticles);
+        
+        // Store original positions for animation
+        this.originalParticlePositions = [...positions];
+        
+        // Start SuperSaiyan animation
+        this.animateSuperSaiyan();
+      }
+      
+      // Create glow effect around player
+      if (!this.glowEffect) {
+        const glowGeometry = new THREE.SphereGeometry(1.2, 16, 16);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+          color: 0xFFAA00,
+          transparent: true,
+          opacity: 0.3,
+          side: THREE.BackSide,
+          blending: THREE.AdditiveBlending
+        });
+        
+        this.glowEffect = new THREE.Mesh(glowGeometry, glowMaterial);
+        this.glowEffect.position.y = 0.9;  // Center on body
+        this.add(this.glowEffect);
+      }
+    } else {
+      // Restore original appearance
+      this.body.material.color.set(0x3366FF);
+      this.leftArm.material.color.set(0x3366FF);
+      this.rightArm.material.color.set(0x3366FF);
+      
+      // Remove head glow
+      this.head.material.emissive = new THREE.Color(0x000000);
+      this.head.material.emissiveIntensity = 0;
+      
+      // Remove fire particles
+      if (this.fireParticles) {
+        this.remove(this.fireParticles);
+        this.fireParticles.geometry.dispose();
+        this.fireParticles.material.dispose();
+        this.fireParticles = null;
+      }
+      
+      // Remove glow effect
+      if (this.glowEffect) {
+        this.remove(this.glowEffect);
+        this.glowEffect.geometry.dispose();
+        this.glowEffect.material.dispose();
+        this.glowEffect = null;
+      }
+      
+      // Stop animation
+      if (this.superSaiyanAnimationFrame) {
+        cancelAnimationFrame(this.superSaiyanAnimationFrame);
+        this.superSaiyanAnimationFrame = null;
+      }
+    }
+  }
+  
+  /**
+   * Animates the SuperSaiyan fire effect
+   */
+  animateSuperSaiyan() {
+    if (!this.isSuperSaiyanMode || !this.fireParticles) return;
+    
+    const positions = this.fireParticles.geometry.attributes.position.array;
+    const originalPositions = this.originalParticlePositions;
+    const time = Date.now() * 0.005;
+    
+    // Animate each particle to create fire effect
+    for (let i = 0; i < positions.length; i += 3) {
+      // Get original position
+      const x = originalPositions[i];
+      const y = originalPositions[i + 1];
+      const z = originalPositions[i + 2];
+      
+      // Add time-based variation
+      positions[i] = x + Math.sin(time + i) * 0.1;
+      positions[i + 1] = y + Math.cos(time + i * 0.5) * 0.1 + Math.sin(time * 2) * 0.05;
+      positions[i + 2] = z + Math.cos(time + i * 0.7) * 0.1;
+    }
+    
+    this.fireParticles.geometry.attributes.position.needsUpdate = true;
+    
+    // Pulse the glow effect
+    if (this.glowEffect) {
+      const scale = 1.0 + Math.sin(time * 2) * 0.1;
+      this.glowEffect.scale.set(scale, scale, scale);
+    }
+    
+    // Continue animation loop
+    this.superSaiyanAnimationFrame = requestAnimationFrame(() => this.animateSuperSaiyan());
+  }
+
+  /**
    * Animates the player model based on movement
    * @param {Number} deltaTime - Time since last frame in seconds
    * @param {Boolean} isMoving - Whether the player is currently moving
