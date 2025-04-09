@@ -20,7 +20,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("WebSocketTester")
 
-# Default WebSocket server URL
+# Default WebSocket server URL - no /api prefix for local testing
 WS_SERVER_URL = "ws://localhost:8001/ws"
 
 class MinecraftClient:
