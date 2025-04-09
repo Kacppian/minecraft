@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import { World } from './world';
 import { blocks } from './blocks';
+import audioManager from './audioManager';
 
 const CENTER_SCREEN = new THREE.Vector2();
 
