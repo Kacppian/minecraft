@@ -139,6 +139,13 @@ export class MultiplayerManager {
         this.handleChatMessage(message.player_id, message.text);
         break;
         
+      case 'supersaiyan_toggle':
+        console.log('SuperSaiyan toggle received:', message.player_id, message.active);
+        if (message.player_id !== this.playerId) {
+          this.handleSuperSaiyanToggle(message.player_id, message.active);
+        }
+        break;
+        
       default:
         console.warn('Unknown message type:', message.type);
     }
