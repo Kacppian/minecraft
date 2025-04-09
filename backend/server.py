@@ -80,13 +80,21 @@ class ConnectionManager:
         if player_id in self.active_connections:
             existing_players = {pid: state for pid, state in self.player_states.items() 
                                if pid != player_id and state["connected"]}
+            
+            logger.info(f"Sending existing players to {player_id}: {len(existing_players)} players")
             if existing_players:
-                await self.active_connections[player_id].send_text(
-                    json.dumps({
-                        "type": "existing_players",
-                        "players": list(existing_players.values())
-                    })
-                )
+                try:
+                    await self.active_connections[player_id].send_text(
+                        json.dumps({
+                            "type": "existing_players",
+                            "players": list(existing_players.values())
+                        })
+                    )
+                    logger.info(f"Sent existing_players event to {player_id} with {len(existing_players)} players")
+                except Exception as e:
+                    logger.error(f"Error sending existing_players to {player_id}: {str(e)}")
+            else:
+                logger.info(f"No existing players to send to {player_id}")
     
     async def broadcast_player_joined(self, player_id: str):
         """Notify all clients about a new player"""
