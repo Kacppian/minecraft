@@ -152,7 +152,9 @@ async def test():
 @app.websocket("/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
     # Wait for initial connection message with player name
+    logger.info(f"WebSocket connection request from player {player_id}")
     await websocket.accept()
+    logger.info(f"WebSocket connection accepted for player {player_id}")
     
     try:
         # First message should contain player name
