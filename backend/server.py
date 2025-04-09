@@ -103,26 +103,27 @@ class ConnectionManager:
             broadcast_count = 0
             
             logger.info(f"Broadcasting player joined event for {player_data['name']} ({player_id})")
-            logger.info(f"Active connections: {len(self.active_connections)}, broadcasting to {len(self.active_connections) - 1} other players")
+            logger.info(f"Active connections: {len(self.active_connections)}, broadcasting to ALL players")
             
+            # Broadcast to ALL connections, including the player who joined
+            # The frontend will filter out messages about its own player
             for connection_id, connection in self.active_connections.items():
-                if connection_id != player_id:  # Don't send to the player who just joined
-                    try:
-                        await connection.send_text(
-                            json.dumps({
-                                "type": "player_joined",
-                                "player": player_data
-                            })
-                        )
-                        logger.info(f"Sent player_joined event to {connection_id}")
-                        broadcast_count += 1
-                    except Exception as e:
-                        logger.error(f"Error sending player_joined event to {connection_id}: {str(e)}")
+                try:
+                    await connection.send_text(
+                        json.dumps({
+                            "type": "player_joined",
+                            "player": player_data
+                        })
+                    )
+                    logger.info(f"Sent player_joined event to {connection_id}")
+                    broadcast_count += 1
+                except Exception as e:
+                    logger.error(f"Error sending player_joined event to {connection_id}: {str(e)}")
             
             if broadcast_count > 0:
                 logger.info(f"Successfully broadcast player_joined event to {broadcast_count} players")
             else:
-                logger.info("No other players to broadcast join event to")
+                logger.info("No players to broadcast join event to")
     
     async def broadcast_player_left(self, player_id: str):
         """Notify all clients when a player leaves"""
