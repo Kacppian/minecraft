@@ -132,6 +132,13 @@ export class Physics {
         if (overlapY < overlapXZ) {
           normal = new THREE.Vector3(0, -Math.sign(dy), 0);
           overlap = overlapY;
+          
+          // Check if player was not on ground before (meaning they just landed)
+          if (!player.onGround && player.velocity.y < -5) {
+            // Play land sound if falling speed was significant
+            audioManager.playSound('playerLand');
+          }
+          
           player.onGround = true;
         } else {
           normal = new THREE.Vector3(-dx, 0, -dz).normalize();
