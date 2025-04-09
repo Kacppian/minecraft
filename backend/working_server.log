@@ -1,0 +1,81 @@
+/app/backend/working_server.py:299: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("shutdown")
+INFO:     Started server process [17181]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2025-04-09 14:06:45,146 - __main__ - INFO - WebSocket connection request from player a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+INFO:     ('10.64.128.68', 43234) - "WebSocket /api/ws/a25ed4e2-5f0f-476f-9d96-2771bb96a47a" [accepted]
+2025-04-09 14:06:45,147 - __main__ - INFO - WebSocket connection accepted for player a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+INFO:     connection open
+2025-04-09 14:06:45,398 - __main__ - INFO - Received initial message with player name: adsf
+2025-04-09 14:06:45,398 - __main__ - INFO - Sending existing players to a25ed4e2-5f0f-476f-9d96-2771bb96a47a: 0 players
+2025-04-09 14:06:45,398 - __main__ - INFO - No existing players to send to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:45,398 - __main__ - INFO - Broadcasting player joined event for adsf (a25ed4e2-5f0f-476f-9d96-2771bb96a47a)
+2025-04-09 14:06:45,398 - __main__ - INFO - Active connections: 1, broadcasting to ALL players
+2025-04-09 14:06:45,399 - __main__ - INFO - Sent player_joined event to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:45,399 - __main__ - INFO - Successfully broadcast player_joined event to 1 players
+2025-04-09 14:06:45,399 - __main__ - INFO - Player adsf (a25ed4e2-5f0f-476f-9d96-2771bb96a47a) connected. Total players: 1
+2025-04-09 14:06:45,723 - __main__ - INFO - WebSocket connection request from player ClientA-0051a719
+INFO:     ('127.0.0.1', 38556) - "WebSocket /ws/ClientA-0051a719" [accepted]
+2025-04-09 14:06:45,723 - __main__ - INFO - WebSocket connection accepted for player ClientA-0051a719
+INFO:     connection open
+2025-04-09 14:06:45,725 - __main__ - INFO - WebSocket connection request from player ClientB-ee7c3480
+INFO:     ('127.0.0.1', 38570) - "WebSocket /ws/ClientB-ee7c3480" [accepted]
+2025-04-09 14:06:45,725 - __main__ - INFO - WebSocket connection accepted for player ClientB-ee7c3480
+INFO:     connection open
+2025-04-09 14:06:45,727 - __main__ - INFO - Received initial message with player name: ClientA
+2025-04-09 14:06:45,727 - __main__ - INFO - Sending existing players to ClientA-0051a719: 1 players
+2025-04-09 14:06:45,727 - __main__ - INFO - Sent existing_players event to ClientA-0051a719 with 1 players
+2025-04-09 14:06:45,728 - __main__ - INFO - Broadcasting player joined event for ClientA (ClientA-0051a719)
+2025-04-09 14:06:45,728 - __main__ - INFO - Active connections: 2, broadcasting to ALL players
+2025-04-09 14:06:45,728 - __main__ - INFO - Sent player_joined event to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:45,728 - __main__ - INFO - Sent player_joined event to ClientA-0051a719
+2025-04-09 14:06:45,728 - __main__ - INFO - Successfully broadcast player_joined event to 2 players
+2025-04-09 14:06:45,728 - __main__ - INFO - Player ClientA (ClientA-0051a719) connected. Total players: 2
+2025-04-09 14:06:45,728 - __main__ - INFO - Received message from ClientA (ClientA-0051a719): message
+2025-04-09 14:06:45,729 - __main__ - INFO - Received initial message with player name: ClientB
+2025-04-09 14:06:45,729 - __main__ - INFO - Sending existing players to ClientB-ee7c3480: 2 players
+2025-04-09 14:06:45,729 - __main__ - INFO - Sent existing_players event to ClientB-ee7c3480 with 2 players
+2025-04-09 14:06:45,729 - __main__ - INFO - Broadcasting player joined event for ClientB (ClientB-ee7c3480)
+2025-04-09 14:06:45,729 - __main__ - INFO - Active connections: 3, broadcasting to ALL players
+2025-04-09 14:06:45,730 - __main__ - INFO - Sent player_joined event to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:45,730 - __main__ - INFO - Sent player_joined event to ClientA-0051a719
+2025-04-09 14:06:45,730 - __main__ - INFO - Sent player_joined event to ClientB-ee7c3480
+2025-04-09 14:06:45,730 - __main__ - INFO - Successfully broadcast player_joined event to 3 players
+2025-04-09 14:06:45,730 - __main__ - INFO - Player ClientB (ClientB-ee7c3480) connected. Total players: 3
+2025-04-09 14:06:45,730 - __main__ - INFO - Received message from ClientB (ClientB-ee7c3480): message
+2025-04-09 14:06:46,729 - __main__ - INFO - Received message from ClientA (ClientA-0051a719): message
+2025-04-09 14:06:46,729 - __main__ - INFO - Received message from ClientB (ClientB-ee7c3480): message
+2025-04-09 14:06:47,731 - __main__ - INFO - Received message from ClientA (ClientA-0051a719): message
+2025-04-09 14:06:47,731 - __main__ - INFO - Received message from ClientB (ClientB-ee7c3480): message
+2025-04-09 14:06:58,744 - __main__ - INFO - Connection closed for ClientA-0051a719
+2025-04-09 14:06:58,744 - __main__ - INFO - Player ClientA-0051a719 disconnected. Total players: 2
+2025-04-09 14:06:58,744 - __main__ - INFO - Broadcasting player_left event for ClientA-0051a719
+2025-04-09 14:06:58,745 - __main__ - INFO - Sent player_left notification to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:58,745 - __main__ - ERROR - Error sending player_left notification to ClientB-ee7c3480: received 1000 (OK); then sent 1000 (OK)
+2025-04-09 14:06:58,745 - __main__ - INFO - Successfully broadcast player_left event to 1 players
+2025-04-09 14:06:58,745 - __main__ - INFO - Player ClientA-0051a719 properly disconnected and broadcast sent
+INFO:     connection closed
+2025-04-09 14:06:58,746 - __main__ - INFO - Connection closed for ClientB-ee7c3480
+2025-04-09 14:06:58,746 - __main__ - INFO - Player ClientB-ee7c3480 disconnected. Total players: 1
+2025-04-09 14:06:58,746 - __main__ - INFO - Broadcasting player_left event for ClientB-ee7c3480
+2025-04-09 14:06:58,746 - __main__ - INFO - Sent player_left notification to a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:06:58,746 - __main__ - INFO - Successfully broadcast player_left event to 1 players
+2025-04-09 14:06:58,746 - __main__ - INFO - Player ClientB-ee7c3480 properly disconnected and broadcast sent
+INFO:     connection closed
+2025-04-09 14:07:37,820 - __main__ - INFO - Connection closed for a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:07:37,820 - __main__ - INFO - Player a25ed4e2-5f0f-476f-9d96-2771bb96a47a disconnected. Total players: 0
+2025-04-09 14:07:37,820 - __main__ - INFO - Broadcasting player_left event for a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:07:37,820 - __main__ - INFO - Successfully broadcast player_left event to 0 players
+2025-04-09 14:07:37,820 - __main__ - INFO - Player a25ed4e2-5f0f-476f-9d96-2771bb96a47a properly disconnected and broadcast sent
+INFO:     connection closed
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17181]

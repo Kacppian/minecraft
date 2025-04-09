@@ -1,0 +1,45 @@
+/app/backend/fixed_server.py:311: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("shutdown")
+INFO:     Started server process [17042]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+2025-04-09 14:05:02,118 - __main__ - INFO - WebSocket connection request from player a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+INFO:     ('10.64.128.68', 58656) - "WebSocket /api/ws/a25ed4e2-5f0f-476f-9d96-2771bb96a47a" [accepted]
+2025-04-09 14:05:02,118 - __main__ - INFO - WebSocket connection accepted for player a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+INFO:     connection open
+2025-04-09 14:05:02,377 - __main__ - INFO - Received initial message with player name: adsf
+2025-04-09 14:05:02,377 - __main__ - ERROR - Failed to register player in manager: Expected ASGI message "websocket.send" or "websocket.close", but got 'websocket.accept'
+2025-04-09 14:05:02,377 - __main__ - INFO - Broadcasting player_left event for a25ed4e2-5f0f-476f-9d96-2771bb96a47a
+2025-04-09 14:05:02,377 - __main__ - INFO - Successfully broadcast player_left event to 0 players
+2025-04-09 14:05:02,377 - __main__ - INFO - Player a25ed4e2-5f0f-476f-9d96-2771bb96a47a properly disconnected and broadcast sent
+2025-04-09 14:05:13,235 - __main__ - INFO - WebSocket connection request from player ClientA-18c4c4e1
+INFO:     ('127.0.0.1', 53972) - "WebSocket /ws/ClientA-18c4c4e1" [accepted]
+2025-04-09 14:05:13,235 - __main__ - INFO - WebSocket connection accepted for player ClientA-18c4c4e1
+INFO:     connection open
+2025-04-09 14:05:13,237 - __main__ - INFO - WebSocket connection request from player ClientB-9cef69bb
+INFO:     ('127.0.0.1', 53980) - "WebSocket /ws/ClientB-9cef69bb" [accepted]
+2025-04-09 14:05:13,238 - __main__ - INFO - WebSocket connection accepted for player ClientB-9cef69bb
+INFO:     connection open
+2025-04-09 14:05:13,239 - __main__ - INFO - Received initial message with player name: ClientA
+2025-04-09 14:05:13,239 - __main__ - ERROR - Failed to register player in manager: Expected ASGI message "websocket.send" or "websocket.close", but got 'websocket.accept'
+2025-04-09 14:05:13,239 - __main__ - INFO - Broadcasting player_left event for ClientA-18c4c4e1
+2025-04-09 14:05:13,239 - __main__ - INFO - Successfully broadcast player_left event to 0 players
+2025-04-09 14:05:13,239 - __main__ - INFO - Player ClientA-18c4c4e1 properly disconnected and broadcast sent
+2025-04-09 14:05:13,241 - __main__ - INFO - Received initial message with player name: ClientB
+2025-04-09 14:05:13,241 - __main__ - ERROR - Failed to register player in manager: Expected ASGI message "websocket.send" or "websocket.close", but got 'websocket.accept'
+2025-04-09 14:05:13,241 - __main__ - INFO - Broadcasting player_left event for ClientB-9cef69bb
+2025-04-09 14:05:13,241 - __main__ - INFO - Successfully broadcast player_left event to 0 players
+2025-04-09 14:05:13,241 - __main__ - INFO - Player ClientB-9cef69bb properly disconnected and broadcast sent
+INFO:     connection closed
+INFO:     connection closed
+INFO:     Shutting down
+INFO:     connection closed
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [17042]

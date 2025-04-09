@@ -1,0 +1,46 @@
+2025-04-09 14:02:47,477 - INFO - Starting minimal WebSocket server...
+INFO:     Started server process [16860]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8005 (Press CTRL+C to quit)
+INFO:     ('127.0.0.1', 41142) - "WebSocket /ws/ClientA-6136772c" [accepted]
+2025-04-09 14:03:02,214 - INFO - Client connected: ClientA-6136772c
+INFO:     connection open
+INFO:     ('127.0.0.1', 41146) - "WebSocket /ws/ClientB-5327f15f" [accepted]
+2025-04-09 14:03:02,217 - INFO - Client connected: ClientB-5327f15f
+INFO:     connection open
+2025-04-09 14:03:02,218 - INFO - Notified ClientA-6136772c about ClientB-5327f15f joining
+2025-04-09 14:03:02,219 - INFO - Notified ClientB-5327f15f about ClientA-6136772c joining
+2025-04-09 14:03:02,219 - INFO - Received from ClientA-6136772c: {"type": "hello", "name": "ClientA"}
+2025-04-09 14:03:02,219 - INFO - Sent message from ClientA-6136772c to ClientA-6136772c
+2025-04-09 14:03:02,220 - INFO - Sent message from ClientA-6136772c to ClientB-5327f15f
+2025-04-09 14:03:02,220 - INFO - Received from ClientA-6136772c: {"type": "message", "content": "Message 1 from ClientA"}
+2025-04-09 14:03:02,220 - INFO - Sent message from ClientA-6136772c to ClientA-6136772c
+2025-04-09 14:03:02,220 - INFO - Sent message from ClientA-6136772c to ClientB-5327f15f
+2025-04-09 14:03:02,220 - INFO - Received from ClientB-5327f15f: {"type": "hello", "name": "ClientB"}
+2025-04-09 14:03:02,220 - INFO - Sent message from ClientB-5327f15f to ClientA-6136772c
+2025-04-09 14:03:02,221 - INFO - Sent message from ClientB-5327f15f to ClientB-5327f15f
+2025-04-09 14:03:02,221 - INFO - Received from ClientB-5327f15f: {"type": "message", "content": "Message 1 from ClientB"}
+2025-04-09 14:03:02,221 - INFO - Sent message from ClientB-5327f15f to ClientA-6136772c
+2025-04-09 14:03:02,221 - INFO - Sent message from ClientB-5327f15f to ClientB-5327f15f
+2025-04-09 14:03:03,221 - INFO - Received from ClientA-6136772c: {"type": "message", "content": "Message 2 from ClientA"}
+2025-04-09 14:03:03,222 - INFO - Sent message from ClientA-6136772c to ClientA-6136772c
+2025-04-09 14:03:03,222 - INFO - Sent message from ClientA-6136772c to ClientB-5327f15f
+2025-04-09 14:03:03,223 - INFO - Received from ClientB-5327f15f: {"type": "message", "content": "Message 2 from ClientB"}
+2025-04-09 14:03:03,223 - INFO - Sent message from ClientB-5327f15f to ClientA-6136772c
+2025-04-09 14:03:03,223 - INFO - Sent message from ClientB-5327f15f to ClientB-5327f15f
+2025-04-09 14:03:04,223 - INFO - Received from ClientA-6136772c: {"type": "message", "content": "Message 3 from ClientA"}
+2025-04-09 14:03:04,224 - INFO - Sent message from ClientA-6136772c to ClientA-6136772c
+2025-04-09 14:03:04,224 - INFO - Sent message from ClientA-6136772c to ClientB-5327f15f
+2025-04-09 14:03:04,225 - INFO - Received from ClientB-5327f15f: {"type": "message", "content": "Message 3 from ClientB"}
+2025-04-09 14:03:04,225 - INFO - Sent message from ClientB-5327f15f to ClientA-6136772c
+2025-04-09 14:03:04,225 - INFO - Sent message from ClientB-5327f15f to ClientB-5327f15f
+2025-04-09 14:03:15,236 - INFO - Client disconnected: ClientA-6136772c
+2025-04-09 14:03:15,236 - ERROR - Error notifying ClientB-5327f15f: received 1000 (OK); then sent 1000 (OK)
+INFO:     connection closed
+2025-04-09 14:03:15,237 - INFO - Client disconnected: ClientB-5327f15f
+INFO:     connection closed
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [16860]
