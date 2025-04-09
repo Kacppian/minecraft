@@ -35,8 +35,9 @@ const physics = new Physics(scene);
 
 // Initialize multiplayer manager
 const multiplayer = new MultiplayerManager(scene, player);
-// Make it globally accessible for the Player class
+// Make multiplayer manager and audio manager available globally for the overlay screen
 window.multiplayer = multiplayer;
+window.audioManager = audioManager;
 
 // Connect to WebSocket server and start audio when the game starts
 document.addEventListener('keydown', function setupGame() {
