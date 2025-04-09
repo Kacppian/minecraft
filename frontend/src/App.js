@@ -182,6 +182,9 @@ function App() {
               SPACE - Jump<br />
               R - Reset Camera<br />
               U - Toggle UI<br />
+              C - Open Chat<br />
+              M - Toggle Music<br />
+              N - Toggle Sound Effects<br />
               0 - Pickaxe<br />
               1-8 - Select Block<br />
               F1 - Save Game<br />
