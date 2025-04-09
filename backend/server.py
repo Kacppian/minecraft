@@ -319,7 +319,9 @@ async def websocket_endpoint(websocket: WebSocket, player_id: str):
                 break
             except Exception as e:
                 logger.error(f"Error processing message from {player_id}: {str(e)}")
-                
+                if "Cannot call \"receive\" once a disconnect message has been received" in str(e):
+                    logger.info(f"WebSocket already disconnected for {player_id}, breaking loop")
+                    break
     except WebSocketDisconnect:
         logger.info(f"WebSocket disconnected for player {player_id}")
     except Exception as e:
