@@ -74,6 +74,25 @@ function App() {
       e.stopPropagation();
     }
   };
+  
+  // Handle chat message submission
+  const handleChatSubmit = (e) => {
+    e.preventDefault();
+    
+    if (chatMessage.trim() !== "") {
+      // Get the global multiplayer instance
+      const multiplayer = window.multiplayer;
+      if (multiplayer) {
+        // Send chat message
+        multiplayer.sendChatMessage(chatMessage);
+        console.log("Sent chat message:", chatMessage);
+      }
+      
+      // Clear the input and close the chat
+      setChatMessage("");
+      setIsChatOpen(false);
+    }
+  };
 
   return (
     <div onKeyDown={handleKeyDown}>
@@ -94,6 +113,24 @@ function App() {
           <img className="toolbar-icon selected" id="toolbar-0" src="/textures/pickaxe.png" alt="pickaxe"></img>
         </div>
       </div>
+      
+      {/* Chat input */}
+      {isChatOpen && (
+        <div id="chat-container">
+          <form onSubmit={handleChatSubmit}>
+            <input
+              type="text"
+              id="chat-input"
+              ref={chatInputRef}
+              value={chatMessage}
+              onChange={(e) => setChatMessage(e.target.value)}
+              placeholder="Type your message and press Enter"
+              autoComplete="off"
+              maxLength="100"
+            />
+          </form>
+        </div>
+      )}
       <div id="overlay" style={{ display: isNameEntered ? "none" : "flex" }}>
         <div id="instructions">
           <h1>MINECRAFTjs</h1>
