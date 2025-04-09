@@ -1,0 +1,22 @@
+2025-04-09 13:15:51,052 - WebSocketServer - INFO - Starting WebSocket server
+2025-04-09 13:15:51,055 - asyncio - DEBUG - Using selector: EpollSelector
+INFO:     Started server process [8869]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8002 (Press CTRL+C to quit)
+2025-04-09 13:16:03,447 - WebSocketServer - INFO - WebSocket connection request from 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+INFO:     ('127.0.0.1', 47828) - "WebSocket /ws/3c80f751-6b0b-47a0-92ad-9dca3d00c494" [accepted]
+2025-04-09 13:16:03,447 - WebSocketServer - INFO - WebSocket connection accepted for 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+INFO:     connection open
+2025-04-09 13:16:03,449 - WebSocketServer - INFO - Sent welcome message to 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+2025-04-09 13:16:03,450 - WebSocketServer - INFO - Received message from 3c80f751-6b0b-47a0-92ad-9dca3d00c494: {"type": "ping", "timestamp": 1744204563.4494236}
+2025-04-09 13:16:03,450 - WebSocketServer - INFO - Sent pong to 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+2025-04-09 13:16:03,450 - WebSocketServer - INFO - Sent echo to 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+2025-04-09 13:16:03,450 - WebSocketServer - INFO - Received message from 3c80f751-6b0b-47a0-92ad-9dca3d00c494: {"type": "chat", "message": "Hello, WebSocket server!"}
+2025-04-09 13:16:03,451 - WebSocketServer - INFO - Sent echo to 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+2025-04-09 13:16:13,461 - WebSocketServer - INFO - WebSocket disconnected for 3c80f751-6b0b-47a0-92ad-9dca3d00c494
+INFO:     connection closed
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [8869]
