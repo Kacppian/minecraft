@@ -18,6 +18,7 @@ export class WorldChunk extends THREE.Group {
   constructor(size, params, dataStore) {
     super();
     this.loaded = false;
+    this.isGenerated = false;
     this.size = size;
     this.params = params;
     this.dataStore = dataStore;
