@@ -346,12 +346,40 @@ export class MultiplayerManager {
    * @param {Number} deltaTime - Time since last frame
    */
   update(deltaTime) {
-    // Update position and rotation on the server
-    this.sendPositionUpdate();
-    this.sendRotationUpdate();
+    // Only send updates if connected
+    if (this.connected) {
+      // Update position and rotation on the server
+      this.sendPositionUpdate();
+      this.sendRotationUpdate();
+    }
+    
+    // Log other players count occasionally (every 5 seconds)
+    const now = Date.now();
+    if (!this._lastDebugLog || now - this._lastDebugLog > 5000) {
+      console.log(`Active other players: ${this.otherPlayers.size}`);
+      if (this.otherPlayers.size > 0) {
+        console.log('Other players:', Array.from(this.otherPlayers.entries()).map(([id, player]) => {
+          return {
+            id: id,
+            name: player.name,
+            position: {
+              x: player.position.x.toFixed(2),
+              y: player.position.y.toFixed(2),
+              z: player.position.z.toFixed(2)
+            }
+          };
+        }));
+      }
+      this._lastDebugLog = now;
+    }
     
     // Animate other players
     this.otherPlayers.forEach(player => {
+      // Make sure the player model is visible
+      player.visible = true;
+      player.body.visible = true;
+      player.head.visible = true;
+      
       // Calculate if player is moving by comparing last known positions
       const isMoving = player.lastPosition && 
                        (player.lastPosition.x !== player.position.x ||
