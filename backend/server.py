@@ -43,6 +43,8 @@ class ConnectionManager:
         self.active_connections: Dict[str, WebSocket] = {}
         # Store player states (position, rotation, etc.)
         self.player_states: Dict[str, dict] = {}
+        # Last time we logged debug info
+        self.last_debug_log = 0
         
     async def connect(self, websocket: WebSocket, player_id: str, player_name: str):
         await websocket.accept()
