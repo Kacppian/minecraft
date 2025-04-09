@@ -141,7 +141,13 @@ manager = ConnectionManager()
 
 @app.get("/")
 async def root():
+    logger.info("Root endpoint called")
     return {"message": "Hello World"}
+
+@app.get("/test")
+async def test():
+    logger.info("Test endpoint called")
+    return {"status": "ok", "active_connections": len(manager.active_connections)}
 
 @app.websocket("/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
