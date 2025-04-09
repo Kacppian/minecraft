@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { blocks } from './blocks';
 import { Player } from './player';
 import { WorldChunk } from './worldChunk';
+import audioManager from './audioManager';
 
 const collisionMaterial = new THREE.MeshBasicMaterial({
   color: 0xff0000,
