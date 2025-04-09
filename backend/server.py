@@ -1,11 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.responses import HTMLResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import uvicorn
 import os
 import logging
+import json
 from pathlib import Path
+from typing import Dict, List
 
 # /backend 
 ROOT_DIR = Path(__file__).parent
@@ -33,9 +36,147 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Store active connections
+class ConnectionManager:
+    def __init__(self):
+        # active_connections is a dict of websocket connections with player_id as key
+        self.active_connections: Dict[str, WebSocket] = {}
+        # Store player states (position, rotation, etc.)
+        self.player_states: Dict[str, dict] = {}
+        
+    async def connect(self, websocket: WebSocket, player_id: str, player_name: str):
+        await websocket.accept()
+        self.active_connections[player_id] = websocket
+        # Initialize player state
+        self.player_states[player_id] = {
+            "id": player_id,
+            "name": player_name,
+            "position": {"x": 32, "y": 32, "z": 32},
+            "rotation": {"x": 0, "y": 0, "z": 0},
+            "connected": True
+        }
+        # Notify all clients about the new player
+        await self.broadcast_player_joined(player_id)
+        # Send existing players data to the new player
+        await self.send_existing_players(player_id)
+        logger.info(f"Player {player_name} ({player_id}) connected. Total players: {len(self.active_connections)}")
+        
+    def disconnect(self, player_id: str):
+        if player_id in self.active_connections:
+            del self.active_connections[player_id]
+            # Mark player as disconnected but keep state for a while
+            if player_id in self.player_states:
+                self.player_states[player_id]["connected"] = False
+            logger.info(f"Player {player_id} disconnected. Total players: {len(self.active_connections)}")
+    
+    async def send_existing_players(self, player_id: str):
+        """Send all existing player states to a newly connected player"""
+        if player_id in self.active_connections:
+            existing_players = {pid: state for pid, state in self.player_states.items() 
+                               if pid != player_id and state["connected"]}
+            if existing_players:
+                await self.active_connections[player_id].send_text(
+                    json.dumps({
+                        "type": "existing_players",
+                        "players": list(existing_players.values())
+                    })
+                )
+    
+    async def broadcast_player_joined(self, player_id: str):
+        """Notify all clients about a new player"""
+        if player_id in self.player_states:
+            for connection_id, connection in self.active_connections.items():
+                if connection_id != player_id:  # Don't send to the player who just joined
+                    await connection.send_text(
+                        json.dumps({
+                            "type": "player_joined",
+                            "player": self.player_states[player_id]
+                        })
+                    )
+    
+    async def broadcast_player_left(self, player_id: str):
+        """Notify all clients when a player leaves"""
+        for connection_id, connection in self.active_connections.items():
+            if connection_id != player_id:  # Don't send to the player who left
+                await connection.send_text(
+                    json.dumps({
+                        "type": "player_left",
+                        "player_id": player_id
+                    })
+                )
+    
+    async def update_player_state(self, player_id: str, update_data: dict):
+        """Update player state and broadcast to other players"""
+        if player_id in self.player_states:
+            # Update specific fields
+            for key, value in update_data.items():
+                if key in ["position", "rotation"]:
+                    for coord, val in value.items():
+                        self.player_states[player_id][key][coord] = val
+            
+            # Broadcast to all other players
+            for connection_id, connection in self.active_connections.items():
+                if connection_id != player_id:  # Don't send back to the player who made the update
+                    await connection.send_text(
+                        json.dumps({
+                            "type": "player_state_update",
+                            "player_id": player_id,
+                            "state": update_data
+                        })
+                    )
+
+    async def broadcast_block_update(self, player_id: str, block_data: dict):
+        """Broadcast block updates to all players except the one who made the change"""
+        for connection_id, connection in self.active_connections.items():
+            if connection_id != player_id:
+                await connection.send_text(
+                    json.dumps({
+                        "type": "block_update",
+                        "data": block_data
+                    })
+                )
+
+# Initialize connection manager
+manager = ConnectionManager()
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
+
+@app.websocket("/ws/{player_id}")
+async def websocket_endpoint(websocket: WebSocket, player_id: str):
+    # Wait for initial connection message with player name
+    await websocket.accept()
+    
+    try:
+        # First message should contain player name
+        data = await websocket.receive_text()
+        connection_data = json.loads(data)
+        player_name = connection_data.get("name", f"Player-{player_id[:5]}")
+        
+        # Complete connection with player info
+        await manager.connect(websocket, player_id, player_name)
+        
+        # Handle incoming messages
+        while True:
+            data = await websocket.receive_text()
+            message = json.loads(data)
+            message_type = message.get("type", "")
+            
+            if message_type == "position_update":
+                await manager.update_player_state(player_id, {"position": message.get("position", {})})
+            
+            elif message_type == "rotation_update":
+                await manager.update_player_state(player_id, {"rotation": message.get("rotation", {})})
+            
+            elif message_type == "block_update":
+                await manager.broadcast_block_update(player_id, message.get("data", {}))
+            
+            # Add more message types as needed
+                
+    except WebSocketDisconnect:
+        manager.disconnect(player_id)
+        await manager.broadcast_player_left(player_id)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
