@@ -448,6 +448,8 @@ export class Player {
       case 'Space':
         if (this.onGround) {
           this.velocity.y += this.jumpSpeed;
+          // Play jump sound
+          audioManager.playSound('playerJump');
         }
         break;
       case 'F10':
