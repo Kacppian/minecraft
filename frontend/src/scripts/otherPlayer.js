@@ -15,6 +15,10 @@ export class OtherPlayer extends THREE.Group {
     // Create name tag
     this.createNameTag();
     
+    // Create chat bubble (initially hidden)
+    this.chatBubble = null;
+    this.chatTimeout = null;
+    
     // Make player models slightly larger for better visibility
     this.scale.set(1.2, 1.2, 1.2);
     
