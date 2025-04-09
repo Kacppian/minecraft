@@ -177,17 +177,27 @@ export class MultiplayerManager {
    * @param {Object} stateData - New state data
    */
   handlePlayerStateUpdate(playerId, stateData) {
+    // Debug logging
+    console.log(`Updating player ${playerId} state:`, stateData);
+    console.log('Current other players:', Array.from(this.otherPlayers.keys()));
+    
     const player = this.otherPlayers.get(playerId);
     
     if (player) {
+      console.log(`Found player ${playerId} - ${player.name}`);
+      
       // Update position and rotation if they're included in the state update
       if (stateData.position) {
+        console.log(`Updating position for ${player.name}:`, stateData.position);
         player.updatePosition(stateData.position);
       }
       
       if (stateData.rotation) {
+        console.log(`Updating rotation for ${player.name}:`, stateData.rotation);
         player.updateRotation(stateData.rotation);
       }
+    } else {
+      console.warn(`Player ${playerId} not found in otherPlayers map`);
     }
   }
   
