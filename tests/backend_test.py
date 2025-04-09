@@ -7,7 +7,7 @@ import uuid
 import os
 
 class TestMinecraftBackend:
-    base_url = "https://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api"
+    base_url = "https://b3eac731-53d5-46cc-b0a3-66813411fd3c.preview.emergentagent.com/api"
     ws_url = "wss://87e4a1c9-ae10-4df8-87c0-24560c614571.preview.emergentagent.com/api/ws"  # WebSocket endpoint
 
     def test_health_check(self):
