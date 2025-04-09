@@ -13,6 +13,7 @@ export class Player {
   jumpSpeed = 10;
   sprinting = false;
   onGround = false;
+  isSuperSaiyanMode = false;
 
   input = new THREE.Vector3();
   velocity = new THREE.Vector3();
@@ -38,6 +39,14 @@ export class Player {
     animationSpeed: 0.025,
     // Reference to the current animation
     animation: null
+  }
+  
+  // SuperSaiyan mode properties
+  superSaiyanEffect = {
+    particles: null,
+    particlePositions: null,
+    glow: null,
+    animationFrame: null
   }
 
   constructor(scene, world) {
