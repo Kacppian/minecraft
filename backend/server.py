@@ -127,14 +127,24 @@ class ConnectionManager:
     
     async def broadcast_player_left(self, player_id: str):
         """Notify all clients when a player leaves"""
+        logger.info(f"Broadcasting player_left event for {player_id}")
+        broadcast_count = 0
+        
+        # Broadcast to all active connections
         for connection_id, connection in self.active_connections.items():
-            if connection_id != player_id:  # Don't send to the player who left
+            try:
                 await connection.send_text(
                     json.dumps({
                         "type": "player_left",
                         "player_id": player_id
                     })
                 )
+                logger.info(f"Sent player_left notification to {connection_id}")
+                broadcast_count += 1
+            except Exception as e:
+                logger.error(f"Error sending player_left notification to {connection_id}: {str(e)}")
+        
+        logger.info(f"Successfully broadcast player_left event to {broadcast_count} players")
     
     async def update_player_state(self, player_id: str, update_data: dict):
         """Update player state and broadcast to other players"""
