@@ -15,9 +15,14 @@ export class OtherPlayer extends THREE.Group {
     // Create name tag
     this.createNameTag();
     
+    // Make player models slightly larger for better visibility
+    this.scale.set(1.2, 1.2, 1.2);
+    
     // Set initial position and rotation
     this.updatePosition(position);
     this.updateRotation(rotation);
+    
+    console.log(`Created other player: ${name} (${id}) at position:`, position);
   }
   
   /**
