@@ -19,7 +19,7 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-app = FastAPI(prefix="/api")  # Add prefix for proper URL routing
+app = FastAPI()  # No prefix for local testing
 
 app.add_middleware(
     CORSMiddleware,
