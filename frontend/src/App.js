@@ -83,9 +83,16 @@ function App() {
       // Get the global multiplayer instance
       const multiplayer = window.multiplayer;
       if (multiplayer) {
-        // Send chat message
-        multiplayer.sendChatMessage(chatMessage);
-        console.log("Sent chat message:", chatMessage);
+        // Check for special "supersaiyan" keyword
+        if (chatMessage.trim().toLowerCase() === "supersaiyan") {
+          // Send special transformation message instead of chat
+          multiplayer.toggleSuperSaiyanMode();
+          console.log("Activating SuperSaiyan mode!");
+        } else {
+          // Send regular chat message
+          multiplayer.sendChatMessage(chatMessage);
+          console.log("Sent chat message:", chatMessage);
+        }
       }
       
       // Clear the input and close the chat
