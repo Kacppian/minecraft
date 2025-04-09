@@ -150,15 +150,21 @@ export class OtherPlayer extends THREE.Group {
    */
   updateRotation(rotation) {
     if (rotation) {
-      console.log(`OtherPlayer ${this.name} (${this.id}) - Setting rotation:`, rotation);
+      console.log(`OtherPlayer ${this.playerName} (${this.playerId}) - Setting rotation:`, rotation);
       
-      // Rotate the head and body based on y-axis rotation (looking left/right)
-      this.body.rotation.y = rotation.y;
-      this.head.rotation.y = rotation.y;
+      // Rotate the entire player model based on y-axis rotation (looking left/right)
+      // This ensures the whole player (body, arms, legs) faces the direction they're looking
+      this.rotation.y = rotation.y;
+      
+      // We can also add some head tilt for looking up/down
+      this.head.rotation.x = rotation.x;
       
       // Log the actual rotation after setting
-      console.log(`OtherPlayer ${this.name} actual head rotation:`, 
-                 {x: this.head.rotation.x, y: this.head.rotation.y, z: this.head.rotation.z});
+      console.log(`OtherPlayer ${this.playerName} actual rotation:`, 
+                 {
+                   model: {x: this.rotation.x, y: this.rotation.y, z: this.rotation.z},
+                   head: {x: this.head.rotation.x, y: this.head.rotation.y, z: this.head.rotation.z}
+                 });
     }
   }
   
