@@ -446,7 +446,20 @@ export class WorldChunk extends THREE.Group {
     */
   setBlockId(x, y, z, id) {
     if (this.inBounds(x, y, z)) {
+      const oldId = this.data[x][y][z].id;
       this.data[x][y][z].id = id;
+      
+      // Don't play sounds during initial world generation
+      if (this.isGenerated) {
+        // If block is being placed (changing from empty to something)
+        if (oldId === blocks.empty.id && id !== blocks.empty.id) {
+          audioManager.playSound('blockPlace');
+        }
+        // If block is being broken (changing from something to empty)
+        else if (oldId !== blocks.empty.id && id === blocks.empty.id) {
+          audioManager.playSound('blockBreak');
+        }
+      }
     }
   }
 
