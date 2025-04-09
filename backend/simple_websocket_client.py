@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("SimpleClient")
 
 # Set WebSocket URL
-WS_URL = "ws://localhost:8001/ws"
+WS_URL = "ws://localhost:8002/ws"
 
 async def run_client():
     """Run a simple WebSocket client"""
