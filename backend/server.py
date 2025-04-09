@@ -164,6 +164,11 @@ async def ws_path_test():
 
 @app.websocket("/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
+    """WebSocket endpoint for direct access without /api prefix"""
+
+@app.websocket("/api/ws/{player_id}")
+async def api_websocket_endpoint(websocket: WebSocket, player_id: str):
+    """WebSocket endpoint with /api prefix for production environment"""
     # First, accept the connection
     logger.info(f"WebSocket connection request from player {player_id}")
     try:
