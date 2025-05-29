@@ -75,12 +75,20 @@ export class MultiplayerManager {
     // Make the multiplayer instance globally accessible for chat
     window.multiplayer = this;
     
-    this.socket.onclose = () => {
-      console.log('WebSocket connection closed');
+    this.socket.onclose = (event) => {
+      console.log('WebSocket connection closed', event.code, event.reason);
       this.connected = false;
       
-      // Attempt to reconnect after 5 seconds
-      setTimeout(() => this.connect(), 5000);
+      // Only attempt to reconnect if it wasn't a manual close
+      if (event.code !== 1000 && event.code !== 1001) {
+        // Attempt to reconnect after 5 seconds
+        console.log('Attempting to reconnect in 5 seconds...');
+        setTimeout(() => {
+          if (!this.connected) {
+            this.connect();
+          }
+        }, 5000);
+      }
     };
     
     this.socket.onerror = (error) => {
