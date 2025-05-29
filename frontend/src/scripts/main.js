@@ -176,3 +176,20 @@ window.addEventListener('resize', () => {
 setupUI(world, player, physics, scene);
 setupLights();
 animate();
+
+// Add cleanup on page unload
+window.addEventListener('beforeunload', () => {
+  if (window.multiplayer) {
+    window.multiplayer.disconnect();
+  }
+});
+
+// Add cleanup on visibility change (when user switches tabs)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && window.multiplayer) {
+    // Don't disconnect on tab switch, just note it
+    console.log('Tab became hidden');
+  }
+});
+
+console.log('Game initialized');
