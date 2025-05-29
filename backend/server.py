@@ -212,6 +212,11 @@ async def test():
     logger.info("Test endpoint called")
     return {"status": "ok", "active_connections": len(manager.active_connections)}
 
+@app.get("/api/test")
+async def api_test():
+    logger.info("API Test endpoint called")
+    return {"status": "ok", "active_connections": len(manager.active_connections), "prefix": "api"}
+
 @app.websocket("/ws/{player_id}")
 @app.websocket("/api/ws/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, player_id: str):
