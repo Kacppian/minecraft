@@ -210,7 +210,7 @@ export class AudioManager {
       
       this.bgMusicNodes = null;
       this.isMusicPlaying = false;
-      console.log('Background music paused');
+      // console.log('Background music paused');
     } catch (e) {
       console.error('Error pausing background music:', e);
     }
