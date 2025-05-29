@@ -161,7 +161,7 @@ export class AudioManager {
       const methodName = 'play' + soundName.charAt(0).toUpperCase() + soundName.slice(1);
       if (typeof this.sounds[methodName] === 'function') {
         this.sounds[methodName]();
-        console.log(`Playing sound: ${soundName}`);
+        // console.log(`Playing sound: ${soundName}`);
       } else {
         console.warn(`Sound "${soundName}" not found`);
       }
