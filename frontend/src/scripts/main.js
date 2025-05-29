@@ -10,8 +10,8 @@ import { MultiplayerManager } from './multiplayerManager';
 import audioManager from './audioManager';
 
 // UI Setup
-const stats = new Stats();
-document.body.appendChild(stats.dom);
+// const stats = new Stats();
+// document.body.appendChild(stats.dom);
 
 // Renderer setup
 const renderer = new THREE.WebGLRenderer();
@@ -158,7 +158,7 @@ function animate() {
   }
 
   renderer.render(scene, player.controls.isLocked ? player.camera : orbitCamera);
-  stats.update();
+  // stats.update();
 
   previousTime = currentTime;
 }
