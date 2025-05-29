@@ -186,7 +186,7 @@ export class AudioManager {
       this.bgMusicNodes = this.sounds.playBgMusic();
       if (this.bgMusicNodes) {
         this.isMusicPlaying = true;
-        console.log('Background music started');
+        // console.log('Background music started');
       }
     } catch (e) {
       console.error('Error playing background music:', e);
