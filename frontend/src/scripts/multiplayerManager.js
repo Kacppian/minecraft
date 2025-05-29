@@ -32,6 +32,9 @@ export class MultiplayerManager {
    * Initialize the WebSocket connection
    */
   connect() {
+    // Clean up existing connection first
+    this.disconnect();
+    
     // Get the BACKEND_URL from environment
     const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
     
