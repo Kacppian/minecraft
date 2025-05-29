@@ -127,7 +127,7 @@ export class AudioManager {
       osc.start();
       osc.stop(ctx.currentTime + duration);
       
-      console.log(`Playing tone: ${frequency}Hz for ${duration}s`);
+      // console.log(`Playing tone: ${frequency}Hz for ${duration}s`);
     } catch (e) {
       console.error('Error playing tone:', e);
     }
