@@ -55,9 +55,13 @@ function App() {
     
     // Check if Escape key is pressed and chat is open
     if (e.key === 'Escape' && isChatOpen) {
-      e.preventDefault();
-      setIsChatOpen(false);
-      setChatMessage("");
+      try {
+        e.preventDefault();
+        setIsChatOpen(false);
+        setChatMessage("");
+      } catch (error) {
+        console.error('Error handling Escape key:', error);
+      }
     }
   };
 
