@@ -53,13 +53,13 @@ document.addEventListener('keydown', function setupGame() {
     document.getElementById('status').textContent = '';
   }, 3000);
   
-  // Start background music
-  try {
-    audioManager.playMusic();
-    console.log('Background music started');
-  } catch (e) {
-    console.error('Failed to start background music:', e);
-  }
+  // Start background music (disabled by default)
+  // try {
+  //   audioManager.playMusic();
+  //   console.log('Background music started');
+  // } catch (e) {
+  //   console.error('Failed to start background music:', e);
+  // }
   
   // Add keyboard shortcuts for audio control
   document.addEventListener('keydown', (e) => {
