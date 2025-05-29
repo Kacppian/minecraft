@@ -539,4 +539,19 @@ export class MultiplayerManager {
       };
     });
   }
+
+  /**
+   * Disconnect from the WebSocket server
+   */
+  disconnect() {
+    try {
+      if (this.socket && this.socket.readyState !== WebSocket.CLOSED) {
+        this.socket.close();
+      }
+      this.connected = false;
+      this.socket = null;
+    } catch (error) {
+      console.error('Error during disconnect:', error);
+    }
+  }
 }
